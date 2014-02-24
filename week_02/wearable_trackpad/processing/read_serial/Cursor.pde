@@ -7,7 +7,7 @@ class Cursor{
     size = new PVector(50, 50);
     pos = new PVector(width/2, height/2);
     dir = new PVector(0, 0);
-    speed = 5;
+    speed = 10;
   }
   
   void update(){
