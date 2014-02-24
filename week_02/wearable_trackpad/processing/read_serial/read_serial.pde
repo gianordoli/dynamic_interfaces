@@ -2,10 +2,12 @@ import processing.serial.*;
 
 Serial myPort;  // The serial port
 
-ArrayList<PVector> data;
-int maxSize;
-PVector median;
-PVector average;
+ArrayList<PVector> data;  //list of PVectors with latest readings
+int maxSize;       //size of the list
+//PVector median;  //normalized PVector based on MEDIAN
+PVector average;   //normalized PVector based on AVERAGE
+
+PVector zero;      //Stores the "non-touching" value
 
 Cursor myCursor;
 
@@ -13,10 +15,10 @@ void setup() {
   size(800, 600);
   
   data = new ArrayList<PVector>();
-  maxSize = 40;
-  median = new PVector(0, 0);
+  maxSize = 120;
+//  median = new PVector(0, 0);
   average = new PVector(0, 0);
-  
+  zero = new PVector(0, 0);
   
   myCursor = new Cursor();
   
@@ -34,20 +36,34 @@ void draw() {
   myCursor.display();
 }
 
-void debug(){ 
+void debug(){
+  fill(255); 
   textAlign(RIGHT);
   
-  //Median
-  text("median x: ", 80, 20);
-  text(nf(median.x, 0, 2), 120, 20);
-  text("median y: ", 80, 40);
-  text(nf(median.y, 0, 2), 120, 40);
+//  //Median
+//  text("median x: ", 80, 20);
+//  text(nf(median.x, 0, 2), 120, 20);
+//  text("median y: ", 80, 40);
+//  text(nf(median.y, 0, 2), 120, 40);
 
   //Mean average
   text("average x: ", 80, 60);
   text(nf(average.x, 0, 2), 120, 60);
   text("average y: ", 80, 80);
-  text(nf(median.y, 0, 2), 120, 80);
+  text(nf(average.y, 0, 2), 120, 80);
+  
+  //Zero
+  text("zero x: ", 80, 100);
+  text(nf(zero.x, 0, 2), 120, 100);
+  text("zero y: ", 80, 120);
+  text(nf(zero.y, 0, 2), 120, 120);
+
+  fill(255, 0, 0);  
+  //Zero
+  text("dir x: ", 80, height - 60);
+  text(nf(myCursor.dir.x, 0, 2), 120, height - 60);
+  text("dir y: ", 80, height - 40);
+  text(nf(myCursor.dir.y, 0, 2), 120, height - 40);  
 }
 
 void serialEvent (Serial myPort) {
@@ -86,23 +102,33 @@ void addData(PVector currentReading){
   data.add(currentReading);
 //  println(data.size());
 
-  getMedian();
+//  getMedian();
   getAverage();
 }
 
-void getMedian(){
-  if(data.size() >= maxSize){
-    PVector vector1 = data.get(data.size()/2 - 1);
-    PVector vector2 = data.get(data.size()/2);
-    median = vector1;
-    median.add(vector2);
-    median.div(2);
-  }
-}
+//void getMedian(){
+//  if(data.size() >= maxSize){
+//    PVector vector1 = data.get(data.size()/2 - 1);
+//    PVector vector2 = data.get(data.size()/2);
+//    median = vector1;
+//    median.add(vector2);
+//    median.div(2);
+//  }
+//}
 
 void getAverage(){
   for(int i = 0; i < data.size(); i++){
     average.add(data.get(i));
   }
   average.div(data.size());
+}
+
+void keyPressed(){
+  if(key == ' '){
+    println("Set zero");
+    for(int i = 0; i < data.size(); i++){
+      zero.add(data.get(i));
+    }
+    zero.div(data.size());
+  }
 }

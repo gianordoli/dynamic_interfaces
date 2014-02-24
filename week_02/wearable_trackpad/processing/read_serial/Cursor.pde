@@ -12,10 +12,23 @@ class Cursor{
   
   void update(){
 //    dir = median;
-    dir = average;
+    dir.x = average.x - zero.x;
+    dir.y = average.y - zero.y;
     pos.x += dir.x * speed;
-    pos.y += dir.x * speed;
+    pos.y += dir.y * speed;
     pos.add(dir);
+    if(pos.x + size.x/2 >= width){
+      pos.x = width - size.x/2;
+    }
+    if(pos.x - size.x/2 <= 0){
+      pos.x = size.x/2;
+    }    
+    if(pos.y + size.x/2 >= height){
+      pos.y = height - size.y/2;
+    }
+    if(pos.y - size.x/2 <= 0){
+      pos.y = size.y/2;
+    }
   }
   
   void display(){
