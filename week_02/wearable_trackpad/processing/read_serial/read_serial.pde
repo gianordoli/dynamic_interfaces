@@ -7,7 +7,8 @@ int maxSize;       //size of the list
 //PVector median;  //normalized PVector based on MEDIAN
 PVector average;   //normalized PVector based on AVERAGE
 
-PVector zero;      //Stores the "non-touching" value
+//PVector zero;      //Stores the "non-touching" value
+int threshold;     //Minimun value to add to data
 
 Cursor myCursor;
 
@@ -15,10 +16,11 @@ void setup() {
   size(800, 600);
   
   data = new ArrayList<PVector>();
-  maxSize = 120;
+  maxSize = 60;
 //  median = new PVector(0, 0);
   average = new PVector(0, 0);
-  zero = new PVector(0, 0);
+//  zero = new PVector(0, 0);
+  threshold = 10;
   
   myCursor = new Cursor();
   
@@ -52,14 +54,14 @@ void debug(){
   text("average y: ", 80, 80);
   text(nf(average.y, 0, 2), 120, 80);
   
-  //Zero
-  text("zero x: ", 80, 100);
-  text(nf(zero.x, 0, 2), 120, 100);
-  text("zero y: ", 80, 120);
-  text(nf(zero.y, 0, 2), 120, 120);
+//  //Zero
+//  text("zero x: ", 80, 100);
+//  text(nf(zero.x, 0, 2), 120, 100);
+//  text("zero y: ", 80, 120);
+//  text(nf(zero.y, 0, 2), 120, 120);
 
   fill(255, 0, 0);  
-  //Zero
+  //Direction
   text("dir x: ", 80, height - 60);
   text(nf(myCursor.dir.x, 0, 2), 120, height - 60);
   text("dir y: ", 80, height - 40);
@@ -86,20 +88,25 @@ void serialEvent (Serial myPort) {
      PVector currentReading = new PVector();
      currentReading.x = float(myVars[0]);
      currentReading.y = float(myVars[1]);
-//     println("raw: " + rawData);     
-     addData(currentReading);
-     
+//     println("raw: " + rawData); 
+       addData(currentReading);        
    }
-   
   } 
 }
 
-void addData(PVector currentReading){
-  currentReading.normalize();
+void addData(PVector currentReading){  
+
   if(data.size() >= maxSize){
     data.remove(0);
   }
-  data.add(currentReading);
+  if(abs(currentReading.x) >= threshold &&
+     abs(currentReading.y) >= threshold){
+    currentReading.normalize();    
+    data.add(currentReading);
+  }else{
+    PVector neutral = new PVector(0, 0);
+    data.add(neutral);
+  }
 //  println(data.size());
 
 //  getMedian();
@@ -123,12 +130,12 @@ void getAverage(){
   average.div(data.size());
 }
 
-void keyPressed(){
-  if(key == ' '){
-    println("Set zero");
-    for(int i = 0; i < data.size(); i++){
-      zero.add(data.get(i));
-    }
-    zero.div(data.size());
-  }
-}
+//void keyPressed(){
+//  if(key == ' '){
+//    println("Set zero");
+//    for(int i = 0; i < data.size(); i++){
+//      zero.add(data.get(i));
+//    }
+//    zero.div(data.size());
+//  }
+//}

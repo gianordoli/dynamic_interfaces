@@ -7,13 +7,15 @@ class Cursor{
     size = new PVector(50, 50);
     pos = new PVector(width/2, height/2);
     dir = new PVector(0, 0);
-    speed = 2;
+    speed = 5;
   }
   
   void update(){
 //    dir = median;
-    dir.x = average.x - zero.x;
-    dir.y = average.y - zero.y;
+//    dir.x = average.x - zero.x;
+//    dir.y = average.y - zero.y;
+    dir.x = average.x;
+    dir.y = average.y;
     pos.x += dir.x * speed;
     pos.y += dir.y * speed;
     pos.add(dir);
