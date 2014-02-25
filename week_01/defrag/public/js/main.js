@@ -9,7 +9,7 @@ $(document).ready(function(){
 		y: 0
 	}
 
-	canvas.addEventListener('mousemove', function(evt){
+	document.addEventListener('mousemove', function(evt){
 		getMousePos(evt);
 	}, false);	
 
