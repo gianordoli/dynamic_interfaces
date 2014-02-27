@@ -18,7 +18,7 @@ class Cursor{
     dir.y = average.y;
     pos.x += dir.x * speed;
     pos.y += dir.y * speed;
-    pos.add(dir);
+//    pos.add(dir);
     if(pos.x + size.x/2 >= width){
       pos.x = width - size.x/2;
     }
