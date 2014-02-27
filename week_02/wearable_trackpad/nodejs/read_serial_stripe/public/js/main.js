@@ -1,10 +1,20 @@
 window.onload = function() {
 
-	var data;	     //list of PVectors with latest readings
-	var maxSize;     //size of the list
-	var average;     //mean average of the last 20 (maxSize) readings
-	var threshold;	 //Minimum value to add to data
-	var sliderSpeed; //Slider change "speed"
+	/*-------------------- WEARABLE STUFF --------------------*/
+	var data = new Array();	//list of PVectors with latest readings
+	var maxSize = 20;		//size of the list
+
+	//Fill the array with 0's
+	//Otherwise the average will begin unstable
+	for(var i = 0; i < maxSize; i++){
+		var neutral = 0;
+	    data.push(neutral);
+	}
+
+	var average = 0;			// mean average of the last 20 (maxSize) readings
+	var threshold = 200;		//Minimum value to add to data
+	var sliderSpeed = 1/2000;	//Slider change "speed"	
+	/*--------------------------------------------------------*/
 
 	// Video
 	var video = document.getElementById("video");
@@ -19,24 +29,6 @@ window.onload = function() {
 
 	// Our wearable slider 
 	var slider = new Object();
-
-	setup();
-
-	function setup() {
-	  data = new Array();
-	  maxSize = 20;
-
-	  //Fill the array with 0's
-	  //Otherwise the average will begin unstable
-	  for(var i = 0; i < maxSize; i++){
-	    var neutral = 0;
-	    data.push(neutral);
-	  }
-
-	  average = 0;
-	  threshold = 200;
-	  sliderSpeed = 1/5000;
-	}
 
 	// 1: Data comes in
 	var socket = io.connect('http://localhost:9001');
@@ -53,8 +45,7 @@ window.onload = function() {
 	    data.shift(); //Take the first element of an array out
 	  }
 
-	  if(Math.abs(currentReading) >= threshold){
-		currentReading = roundTo3Decimals(currentReading);
+	  if(Math.abs(currentReading) > threshold){
 		// console.log(currentReading);
 	    data.push(currentReading);
 	  }else{
@@ -81,7 +72,11 @@ window.onload = function() {
 	// 4: Update the seek slider
 	slider.update = function(average){
 		// console.log(average);
-		video.currentTime += average * sliderSpeed;		
+		// if(Math.abs(average) > threshold){
+			// video.pause();
+			video.currentTime += average * sliderSpeed;
+			// video.play();
+		// }
 	}
 
 	var roundTo3Decimals = function(numberToRound) {
@@ -89,7 +84,11 @@ window.onload = function() {
 	}
 
 	// Event listener for the play/pause button
-	playButton.addEventListener("click", function() {
+	playButton.addEventListener("click", playPause);
+
+	function playPause(){
+		console.log('play!');
+		console.log('----');
 		if (video.paused == true) {
 			// Play the video
 			video.play();
@@ -102,8 +101,8 @@ window.onload = function() {
 
 			// Update the button text to 'Play'
 			playButton.innerHTML = "Play";
-		}
-	});
+		}		
+	}
 
 
 	// Event listener for the full-screen button
