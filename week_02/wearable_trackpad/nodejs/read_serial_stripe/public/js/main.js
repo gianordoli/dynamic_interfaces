@@ -2,7 +2,7 @@ window.onload = function() {
 
 	/*-------------------- WEARABLE STUFF --------------------*/
 	var data = new Array();	//list of PVectors with latest readings
-	var maxSize = 20;		//size of the list
+	var maxSize = 10;		//size of the list
 
 	//Fill the array with 0's
 	//Otherwise the average will begin unstable
@@ -11,9 +11,12 @@ window.onload = function() {
 	    data.push(neutral);
 	}
 
-	var average = 0;			// mean average of the last 20 (maxSize) readings
-	var threshold = 200;		//Minimum value to add to data
-	var sliderSpeed = 1/2000;	//Slider change "speed"	
+	// var average = 0;			// mean average of the last 20 (maxSize) readings
+	var basis;					// no-touching value	
+	var threshold = 150;		//Minimum value to add to data
+	var sliderSpeed = 1/2500;	//Slider change "speed"	
+
+	var isCalibrated = false;
 	/*--------------------------------------------------------*/
 
 	// Video
@@ -32,41 +35,70 @@ window.onload = function() {
 
 	// 1: Data comes in
 	var socket = io.connect('http://localhost:9001');
-	socket.on('touch', function(data) {
+	socket.on('touch', function(reading) {
 		// console.log('data in');
-		// console.log(data);
-		addData(data);
+		// console.log(reading);
+		
+		if(isCalibrated){
+			var currentReading = reading - basis;
+			console.log('basis: ' + basis + ', reading: ' + currentReading);
+			addData(currentReading);
+		}else{
+			setBasis(reading);
+		}
 	});
+
+	// 0: SET BASIS
+	function setBasis(reading){
+		if(data.length < maxSize * 20){
+			data.push(reading);
+			console.log('calibrating...');
+		}else{
+			basis = getAverage();
+			console.log('CALIBRATED! basis value: ' + basis);
+			isCalibrated = true;
+		}
+	}
 
 	// 2: Add data to an array
 	// Filter based on threshold
 	function addData(currentReading){  
-	  if(data.length >= maxSize){
-	    data.shift(); //Take the first element of an array out
-	  }
+		if(data.length >= maxSize){
+		    data.shift(); //Take the first element of an array out
+		}
 
-	  if(Math.abs(currentReading) > threshold){
-		// console.log(currentReading);
-	    data.push(currentReading);
-	  }else{
-	    var neutral = 0;
-	    // console.log(neutral.x);
-	    data.push(neutral);
-	  }
-	 // console.log(data.length);
-
-	  getAverage();
+		if(Math.abs(currentReading) > threshold){
+			// console.log(currentReading);
+		    data.push(currentReading);
+		}else{
+		    for(var i = 0; i < data.length; i++){
+		    	data[i] = 0;
+		    }
+		}
+		 // console.log(data.length);
+		var average = getAverage();
+		// if(average > threshold){
+			slider.update(average);
+		// }
 	}
 
 	// 3: Calculates the average of readings, based on the array size (maxSize)
-	function getAverage(){
-	  for(var i = 0; i < data.length; i++){
-	    average += data[i];
-	  }
-	  average /= data.length;
-	  average = roundTo3Decimals(average);
+	var getAverage = function(){
+		var average = 0;
+		for(var i = 0; i < data.length; i++){
+			average += data[i];
+		}
+
+		average /= data.length;
+		average = roundTo3Decimals(average);
 	  // console.log(average);
-	  slider.update(average);
+		return average;
+	  	// if(!isCalibrated){
+
+	  	// }
+		// if(Math.abs(average) > threshold){
+		// 	slider.update(average);
+		// }
 	}
 
 	// 4: Update the seek slider

@@ -6,7 +6,8 @@ var connect = require('connect'),
 	
 	// define a class
  SerialPort = require("serialport").SerialPort,
-	  sPort = "/dev/tty.usbmodem1411",
+	  sPort = "/dev/tty.usbmodem1421",
+    // sPort = "/dev/tty.usbserial-A501E8LT",
 	// create an instance (object)
 	arduino = new SerialPort(sPort, {
 	baudrate: 9600
