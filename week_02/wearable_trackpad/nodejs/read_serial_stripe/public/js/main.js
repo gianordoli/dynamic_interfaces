@@ -13,10 +13,13 @@ window.onload = function() {
 
 	// var average = 0;			// mean average of the last 20 (maxSize) readings
 	var basis;					// no-touching value	
-	var threshold = 150;		//Minimum value to add to data
-	var sliderSpeed = 1/2500;	//Slider change "speed"	
+	var threshold = 100;		//Minimum value to add to data
+	var sliderSpeed = 1/5000;	//Slider change "speed"	
 
 	var isCalibrated = false;
+
+	var isPressing = false;
+	var timer = 0;
 	/*--------------------------------------------------------*/
 
 	// Video
@@ -39,12 +42,24 @@ window.onload = function() {
 		// console.log('data in');
 		// console.log(reading);
 		
-		if(isCalibrated){
-			var currentReading = reading - basis;
-			console.log('basis: ' + basis + ', reading: ' + currentReading);
-			addData(currentReading);
-		}else{
+		//Initialize calibration
+		if(!isCalibrated){
 			setBasis(reading);
+		//If it's calibrated, starts reading/updating the video
+		}else{
+			var currentReading = roundTo3Decimals(reading - basis);
+			// console.log('basis: ' + basis + ', reading: ' + currentReading);
+			// console.log(currentReading);
+			addData(currentReading);	
+
+			if(isPressing){
+				timer ++;
+				console.log(timer);
+				if(timer >= 100){
+					isPressing = false;
+					timer = 0;
+				} 
+			}		
 		}
 	});
 
@@ -53,10 +68,13 @@ window.onload = function() {
 		if(data.length < maxSize * 20){
 			data.push(reading);
 			console.log('calibrating...');
+			console.log(reading);
 		}else{
 			basis = getAverage();
+			//clears the array
 			console.log('CALIBRATED! basis value: ' + basis);
 			isCalibrated = true;
+			data = [];			
 		}
 	}
 
@@ -67,45 +85,64 @@ window.onload = function() {
 		    data.shift(); //Take the first element of an array out
 		}
 
+		//It it is touching, get the average...
 		if(Math.abs(currentReading) > threshold){
 			// console.log(currentReading);
 		    data.push(currentReading);
+
+		//If not, CLEARS THE ARRAY! Stop!
 		}else{
-		    for(var i = 0; i < data.length; i++){
-		    	data[i] = 0;
-		    }
+			data.push(0);
+		    // for(var i = 0; i < data.length; i++){
+		    // 	data[i] = 0;
+		    // }
 		}
+		
 		 // console.log(data.length);
 		var average = getAverage();
-		// if(average > threshold){
+		if(isTaping(data[0], data[Math.floor(data.length)/2], data[data.length - 1])){
+			if(!isPressing){
+				console.log('Called play');
+				playPause();
+				isPressing = true;
+			}
+		}
+		
+		if(Math.abs(average) > threshold && !isPressing){
 			slider.update(average);
-		// }
+		}
+	}
+
+	var isTaping = function(first, middle, last){
+		var tap = false;
+		if(Math.abs(first) < threshold && Math.abs(middle) > threshold * 3 && Math.abs(last) < threshold){
+			tap = true;
+		}
+		return tap;
 	}
 
 	// 3: Calculates the average of readings, based on the array size (maxSize)
 	var getAverage = function(){
 		var average = 0;
+		// var firstQuarter = 0;
+		// var lastQuarter = 0;		
+
 		for(var i = 0; i < data.length; i++){
 			average += data[i];
 		}
 
 		average /= data.length;
 		average = roundTo3Decimals(average);
+		
 	  // console.log(average);
 		return average;
-	  	// if(!isCalibrated){
-
-	  	// }
-		// if(Math.abs(average) > threshold){
-		// 	slider.update(average);
-		// }
 	}
 
 	// 4: Update the seek slider
 	slider.update = function(average){
 		// console.log(average);
 		// if(Math.abs(average) > threshold){
-			// video.pause();
+			video.pause();
 			video.currentTime += average * sliderSpeed;
 			// video.play();
 		// }
