@@ -26,6 +26,14 @@ var Engine = Matter.Engine,
     MouseConstraint = Matter.MouseConstraint,
     Events = Matter.Events;
 
+//In the html file we created a separate canvas only to draw the effects
+//We need that because matter.js creates — and updates  — its own canvas 
+var myCanvas = document.getElementById('canvas-effects');
+var ctx = myCanvas.getContext('2d');
+resizeCanvas();
+var alerts = [];
+
+//Matter.js canvas
 var container = document.getElementById('canvas-container');
 // create a Matter.js engine
 var engine = Engine.create(container, {
@@ -94,6 +102,9 @@ Events.on(engine, 'collisionStart', function(event) {
         //Is object A a circle?
         if (typeof pair.bodyA.circleRadius !== 'undefined') {
 
+            // console.log(pair.bodyA);
+            drawCollision(pair.bodyA.position);
+
             //Is object B one of our bars?
             if (!pair.bodyB.isStatic) {
                 var newColor = pair.bodyB.render.fillStyle;
@@ -118,8 +129,11 @@ Events.on(engine, 'collisionStart', function(event) {
                 createNewBall();
             }
 
-            //Is object B a circle?
+        //Is object B a circle?
         } else if (typeof pair.bodyB.circleRadius !== 'undefined') {
+
+            // console.log(pair.bodyB);
+            drawCollision(pair.bodyB.position);
 
             //Is object A one of our bars?
             if (!pair.bodyA.isStatic) {
@@ -249,6 +263,52 @@ function removeUser(userId) {
     $('#' + userId).remove();
 }
 
+function drawCollision(pos){
+
+    console.log(pos);
+
+    ctx.save();
+    ctx.translate(pos.x, pos.y);
+
+    // ctx.fillStyle = parseHslaColor(0, 0, 0, 0.3);
+    // ctx.beginPath();
+    // ctx.arc(0, 0, 60, 60, 0, Math.PI*2, false);
+    // ctx.fill();    
+
+    for(var angle = 0; angle < 360; angle += 20){
+        // var date = new Date();
+        // var milis = date.getMilliseconds();                 
+        // var rotateAngle = milis/400;
+        var rotateAngle = 0;
+
+        var radius = 30;
+        var x1 = Math.cos(degreeToRadian(angle) + rotateAngle) * radius;
+        var y1 = Math.sin(degreeToRadian(angle) + rotateAngle) * radius;
+
+        radius = 60;
+        var x2 = Math.cos(degreeToRadian(angle) + rotateAngle) * radius;
+        var y2 = Math.sin(degreeToRadian(angle) + rotateAngle) * radius;
+
+        ctx.strokeStyle = parseHslaColor(0, 0, 0, 0.3);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();                   
+    }
+    ctx.restore();
+}
+
+//Resizing the canvas to the full window size
+function resizeCanvas(){
+    screenWidth = window.innerWidth;
+    screenHeight = window.innerHeight;
+
+    canvasPosition = myCanvas.getBoundingClientRect(); // Gets the canvas position
+    myCanvas.width = screenWidth - 4;
+    myCanvas.height = screenHeight - 4;
+}   
+
 /*------------- MY PROCESSING FUNCTIONS -------------*/
 var normalize = function(obj) {
     var normalized = {
@@ -257,6 +317,17 @@ var normalize = function(obj) {
     };
     return normalized;
 };
+
+var degreeToRadian = function(degrees){
+    var radians = degrees*Math.PI/180;
+    return radians
+}
+
+var parseHslaColor = function(h, s, l, a){
+    var myHslColor = 'hsla(' + h + ', ' + s + '%, ' + l + '%, ' + a +')';
+    //console.log('called calculateAngle function');
+    return myHslColor;
+}
 
 var dist = function(x1, y1, x2, y2) {
     var angle = Math.atan2(y1 - y2, x1 - x2);
