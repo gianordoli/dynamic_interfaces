@@ -13,6 +13,8 @@ socket.on('remove user desktop', function(userId) {
     removeUser(userId);
 });
 
+
+
 /*------------- MATTER OBJECTS -------------*/
 // Matter module aliases
 var Engine = Matter.Engine,
@@ -26,13 +28,7 @@ var Engine = Matter.Engine,
     MouseConstraint = Matter.MouseConstraint,
     Events = Matter.Events;
 
-//In the html file we created a separate canvas only to draw the effects
-//We need that because matter.js creates — and updates  — its own canvas 
-var myCanvas = document.getElementById('canvas-effects');
-var ctx = myCanvas.getContext('2d');
-resizeCanvas();
-var alerts = [];
-
+/*------------- WORLD SETUP -------------*/
 //Matter.js canvas
 var container = document.getElementById('canvas-container');
 // create a Matter.js engine
@@ -62,6 +58,10 @@ World.add(engine.world, [
         isStatic: true
     })
 ]);
+
+// run the engine
+createNewBall();
+Engine.run(engine);
 
 /*------------- BALLS -------------*/
 //Create ball
@@ -161,11 +161,6 @@ Events.on(engine, 'collisionStart', function(event) {
     }
 });
 
-// run the engine
-createNewBall();
-Engine.run(engine);
-
-
 function printGoal() {
     playSound(1, 1, 1, 1, 1);
     $('#goalBanner').css('opacity', 1).html('You did it ' + playerWithBall.name + '!');
@@ -212,18 +207,6 @@ function initUser(obj, _id, _name, _color, _scale, _bar) {
     $('body').append(myHtml);
 }
 
-// initUser.prototype.update = function(){}
-
-// $('body').keypress(function(e) {
-//   console.log(e.keyCode);
-//   // if (e.keyCode == 13) {
-//   //   createNewUser();
-//   // }
-//   // else if(e.keyCode == 32) {
-//   //   removeUser();
-//   // }
-// });
-
 function createNewUser(user) {
 
     //Grab the user properties
@@ -263,42 +246,8 @@ function removeUser(userId) {
     $('#' + userId).remove();
 }
 
-function drawCollision(pos){
 
-    console.log(pos);
-
-    ctx.save();
-    ctx.translate(pos.x, pos.y);
-
-    // ctx.fillStyle = parseHslaColor(0, 0, 0, 0.3);
-    // ctx.beginPath();
-    // ctx.arc(0, 0, 60, 60, 0, Math.PI*2, false);
-    // ctx.fill();    
-
-    for(var angle = 0; angle < 360; angle += 20){
-        // var date = new Date();
-        // var milis = date.getMilliseconds();                 
-        // var rotateAngle = milis/400;
-        var rotateAngle = 0;
-
-        var radius = 30;
-        var x1 = Math.cos(degreeToRadian(angle) + rotateAngle) * radius;
-        var y1 = Math.sin(degreeToRadian(angle) + rotateAngle) * radius;
-
-        radius = 60;
-        var x2 = Math.cos(degreeToRadian(angle) + rotateAngle) * radius;
-        var y2 = Math.sin(degreeToRadian(angle) + rotateAngle) * radius;
-
-        ctx.strokeStyle = parseHslaColor(0, 0, 0, 0.3);
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();                   
-    }
-    ctx.restore();
-}
-
+/*------------- AUXILIAR FUNCTIONS -------------*/
 //Resizing the canvas to the full window size
 function resizeCanvas(){
     screenWidth = window.innerWidth;
@@ -308,36 +257,3 @@ function resizeCanvas(){
     myCanvas.width = screenWidth - 4;
     myCanvas.height = screenHeight - 4;
 }   
-
-/*------------- MY PROCESSING FUNCTIONS -------------*/
-var normalize = function(obj) {
-    var normalized = {
-        x: obj.x / (Math.abs(obj.x) + Math.abs(obj.y)),
-        y: obj.y / (Math.abs(obj.x) + Math.abs(obj.y))
-    };
-    return normalized;
-};
-
-var degreeToRadian = function(degrees){
-    var radians = degrees*Math.PI/180;
-    return radians
-}
-
-var parseHslaColor = function(h, s, l, a){
-    var myHslColor = 'hsla(' + h + ', ' + s + '%, ' + l + '%, ' + a +')';
-    //console.log('called calculateAngle function');
-    return myHslColor;
-}
-
-var dist = function(x1, y1, x2, y2) {
-    var angle = Math.atan2(y1 - y2, x1 - x2);
-    var distance;
-    if ((y1 - y2) == 0) {
-        distance = (x1 - x2) / Math.cos(angle);
-    } else {
-        distance = (y1 - y2) / Math.sin(angle);
-    }
-    return distance;
-};
-
-// createStage(1);
