@@ -38,6 +38,8 @@ io.sockets.on('connection', function(socket) {
     socket.on('desktop', function() {
         util.log('desktop has joined');
         desktopId = socket.id;
+        // send tutorial stage
+        socket.emit('stage tutorial');
     });
     if (desktopId !== null) { // only desktop is already joined
         // when new user join

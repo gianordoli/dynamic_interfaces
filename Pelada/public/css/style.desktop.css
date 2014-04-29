@@ -35,6 +35,28 @@ body{
 	opacity: 0;
 }
 
+#textWrapper {
+	transition: 3s;
+}
+
+#stageTitle {
+	position: absolute;
+	z-index: 99;
+	font-size: 5em;
+	width: 200px;
+	height: 50px;
+	text-align: center;
+}
+
+#stageInfo {
+	position: absolute;
+	z-index: 99;
+	font-size: 1.5em;
+	width: 500px;
+	height: 50px;
+	text-align: center;
+}
+
 .flying-name{
 	position: absolute;
 	top:10px;

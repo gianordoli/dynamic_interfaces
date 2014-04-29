@@ -13,6 +13,9 @@ socket.on('remove user desktop', function(userId) {
     removeUser(userId);
 });
 
+// STAGES
+socket.on('stage tutorial', function() {});
+
 /*------------- MATTER OBJECTS -------------*/
 // Matter module aliases
 var Engine = Matter.Engine,
@@ -31,29 +34,11 @@ var container = document.getElementById('canvas-container');
 var engine = Engine.create(container, {
     render: {
         options: {
-            showAngleIndicator: true,
-            wireframes: false,
-            showAngleIndicator: false
+            showAngleIndicator: false,
+            wireframes: false
         }
     }
 });
-
-// add some some walls to the world
-var thickness = 20;
-World.add(engine.world, [
-    Bodies.rectangle(0, window.innerHeight / 2, thickness, window.innerHeight, {
-        isStatic: true
-    }),
-    Bodies.rectangle(window.innerWidth, window.innerHeight / 2, thickness, window.innerHeight, {
-        isStatic: true
-    }),
-    Bodies.rectangle(window.innerWidth / 2, 0, window.innerWidth, thickness, {
-        isStatic: true
-    }),
-    Bodies.rectangle(window.innerWidth / 2, window.innerHeight, window.innerWidth, thickness, {
-        isStatic: true
-    })
-]);
 
 /*------------- BALLS -------------*/
 //Create ball
@@ -101,6 +86,7 @@ Events.on(engine, 'collisionStart', function(event) {
                 pair.bodyA.render.strokeStyle = newColor;
                 // play collision sound
                 playSound(0, ~~ (Math.random() * 10), 1, 1, 1);
+                $('#textWrapper').css('opacity', 0);
                 //Store that id, man!
                 for (var key in users) {
                     if (users[key].bar.id == pair.bodyB.id) {
@@ -109,7 +95,7 @@ Events.on(engine, 'collisionStart', function(event) {
                 }
 
                 //Wait, what?! Is B the GOAL?!
-            } else if (pair.bodyB.id == goalLeft.id || pair.bodyB.id == goalRight.id) {
+            } else if (pair.bodyB.id == scene.worldEl[4].id || pair.bodyB.id == scene.worldEl[5].id) {
                 console.log('GOOOOOOOOOOOOOOOL!');
                 printGoal();
 
@@ -136,7 +122,7 @@ Events.on(engine, 'collisionStart', function(event) {
                 }
 
                 //Wait, what?! Is A the GOAL?!
-            } else if (pair.bodyA.id == goalLeft.id || pair.bodyA.id == goalRight.id) {
+            } else if (pair.bodyA.id == scene.worldEl[4].id || pair.bodyA.id == scene.worldEl[5].id) {
                 console.log('GOOOOOOOOOOOOOOOL!');
                 printGoal();
                 //REMOVE THE BALL!
@@ -147,10 +133,19 @@ Events.on(engine, 'collisionStart', function(event) {
     }
 });
 
+$('#stageTitle').css({
+    top: window.innerHeight / 2 - 50 + 100,
+    left: window.innerWidth / 2 - 200
+});
+$('#stageInfo').css({
+    top: window.innerHeight / 2 + 50 + 100,
+    left: window.innerWidth / 2 - 250
+});
 // run the engine
 createNewBall();
 Engine.run(engine);
-
+scene.render();
+scene.tutorial();
 
 function printGoal() {
     playSound(1, 1, 1, 1, 1);

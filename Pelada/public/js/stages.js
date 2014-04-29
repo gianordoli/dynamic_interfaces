@@ -1,79 +1,89 @@
-var centerX = window.innerWidth / 2,
-    centerY = window.innerHeight / 2;
-
-var spinningDeath = [],
-    goalElements = [],
-    goal;
-
-function createStage() {
-    World.add(engine.world, [
-        // createRect(250, window.innerHeight / 2 + 200, 20, window.innerHeight + 200),
-        // createRect(window.innerWidth, window.innerHeight, 300, 1000),
-        // createRect(0, window.innerHeight / 2 - 50, 150, 20),
-        createRect(window.innerWidth - 220, window.innerHeight, 420, 100),
-        goalElements[0] = Bodies.polygon(0, window.innerHeight / 2 - 85, 3, 40, {
-            isStatic: true
-        }),
-        goalElements[1] = Bodies.polygon(0, window.innerHeight / 2 + 85, 3, 40, {
-            isStatic: true
-        }),
-        goalElements[2] = Bodies.polygon(window.innerWidth, window.innerHeight / 2 - 85, 3, 40, {
-            isStatic: true
-        }),
-        goalElements[3] = Bodies.polygon(window.innerWidth, window.innerHeight / 2 + 85, 3, 40, {
-            isStatic: true
-        }),
-        goalLeft = Bodies.rectangle(0, window.innerHeight / 2, 40, 131, {
-            isStatic: true,
-            friction: 10
-        }),
-        goalRight = Bodies.rectangle(window.innerWidth, window.innerHeight / 2, 40, 131, {
-            isStatic: true,
-            friction: 10
-        }),
-
-        // spinning death
-        spinningDeath[0] = createRect(window.innerWidth / 2, window.innerHeight / 4 - 50, 200 - 100, 20),
-        spinningDeath[1] = createRect(window.innerWidth / 2, window.innerHeight / 4 * 3 + 50, 200 - 100, 20),
-        spinningDeath[2] = createRect(window.innerWidth / 4, window.innerHeight / 2 - 20, 150 + 30, 20),
-        spinningDeath[3] = createRect(window.innerWidth / 1.3, window.innerHeight / 2 - 20, 150 + 30, 20)
-    ]);
-    goalLeft.render.fillStyle = 'white';
-    goalLeft.render.strokeStyle = 'white';
-    goalRight.render.fillStyle = 'white';
-    goalRight.render.strokeStyle = 'white';
-}
-
-function createRect(x, y, w, h) {
-    return Bodies.rectangle(x, y, w, h, {
-        isStatic: true,
-        friction: 0.01
-    });
-}
-
-createStage();
-
-for (var i = 0; i < 2; i++) {
-    Body.rotate(goalElements[i], 45);
-}
-for (var i = 2; i < 4; i++) {
-    Body.rotate(goalElements[i], 0);
-}
-
-for (var i = 0; i < spinningDeath.length; i++) {
-    var color = getRandColor();
-    spinningDeath[i].render.fillStyle = color;
-    spinningDeath[i].render.strokeStyle = color;
-}
-
-setInterval(function() {
-    for (var i = 0; i < 2; i++) {
-        Body.rotate(spinningDeath[i], 0.01);
+/*------------- STAGES ---------------*/
+var scene = {
+    curr: null,
+    w: window.innerWidth,
+    h: window.innerHeight,
+    thickness: 20,
+    center: [this.w / 2, this.h / 2],
+    worldEl: [],
+    tutorial: function() {
+        console.log('rendering tutorial');
+        this.curr = '> tutorial';
+        $('#stageTitle').html('TUTORIAL').css('color', 'black');
+        $('#stageInfo').html('Easy mode, be an octagon to win').css('color', 'black');
+    },
+    blackhole: function() {
+        console.log('rendering blackhole');
+        this.curr = '> blackhole';
+        $('#stageTitle').html('BLACKHOLE').css('color', 'white');
+        $('#stageInfo').html('Beware of the blackhole!').css('color', 'white');
+    },
+    jungle: function() {
+        console.log('rendering jungle');
+        this.curr = '> jungle';
+        $('#stageTitle').html('JUNGLE');
+    },
+    random: function() {
+        this.curr = '> random';
+    },
+    render: function(things) {
+        console.log('rendering scenes');
+        // render goals
+        scene.worldEl = [
+            Bodies.rectangle(0, this.h / 2, scene.thickness, this.h, {
+                isStatic: true
+            }),
+            Bodies.rectangle(this.w, this.h / 2, scene.thickness, this.h, {
+                isStatic: true
+            }),
+            Bodies.rectangle(this.w / 2, 0, this.w, scene.thickness, {
+                isStatic: true
+            }),
+            Bodies.rectangle(this.w / 2, this.h, this.w, scene.thickness, {
+                isStatic: true
+            }),
+            Bodies.rectangle(0, this.h / 2, 40, 131, {
+                isStatic: true,
+                friction: 10
+            }),
+            Bodies.rectangle(this.w, this.h / 2, 40, 131, {
+                isStatic: true,
+                friction: 10
+            }),
+            Bodies.polygon(0, this.h / 2 - 85, 3, 40, {
+                isStatic: true
+            }),
+            Bodies.polygon(0, this.h / 2 + 85, 3, 40, {
+                isStatic: true
+            }),
+            Bodies.polygon(this.w, this.h / 2 - 85, 3, 40, {
+                isStatic: true
+            }),
+            Bodies.polygon(this.w, this.h / 2 + 85, 3, 40, {
+                isStatic: true
+            })
+        ];
+        World.add(engine.world, scene.worldEl);
+        var rand = getRandColor();
+        scene.worldEl.forEach(function(v, i) {
+            if (i < 4) {
+                scene.worldEl[i].render.fillStyle = rand;
+                scene.worldEl[i].render.strokeStyle = rand;
+            } else if (i == 4 || i < 6) {
+                scene.worldEl[i].render.fillStyle = 'white';
+                scene.worldEl[i].render.strokeStyle = 'white';
+            } else if (i == 6 || i < 10) {
+                if (i == 6 || i == 7) {
+                    Body.rotate(scene.worldEl[i], 45);
+                } else {
+                    Body.rotate(scene.worldEl[i], 0);
+                }
+                scene.worldEl[i].render.fillStyle = rand;
+                scene.worldEl[i].render.strokeStyle = rand;
+            }
+        });
     }
-    for (var i = 2; i < 4; i++) {
-        Body.rotate(spinningDeath[i], 0.025);
-    }
-}, 1000 / 60);
+};
 
 function getRandColor() {
     var hsl;
