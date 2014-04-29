@@ -22,6 +22,13 @@ body{
 	z-index: 0;
 }
 
+#canvas-effects{
+	position: absolute;
+	top:0;
+	left: 0;	
+	z-index: 1;
+}
+
 #goalBanner {
 	transition: 1s;
 	position: absolute;

@@ -29,6 +29,8 @@ var Engine = Matter.Engine,
     MouseConstraint = Matter.MouseConstraint,
     Events = Matter.Events;
 
+/*------------- WORLD SETUP -------------*/
+//Matter.js canvas
 var container = document.getElementById('canvas-container');
 // create a Matter.js engine
 var engine = Engine.create(container, {
@@ -79,6 +81,9 @@ Events.on(engine, 'collisionStart', function(event) {
         //Is object A a circle?
         if (typeof pair.bodyA.circleRadius !== 'undefined') {
 
+            // console.log(pair.bodyA);
+            drawCollision(pair.bodyA.position);
+
             //Is object B one of our bars?
             if (!pair.bodyB.isStatic) {
                 var newColor = pair.bodyB.render.fillStyle;
@@ -106,6 +111,9 @@ Events.on(engine, 'collisionStart', function(event) {
 
             //Is object B a circle?
         } else if (typeof pair.bodyB.circleRadius !== 'undefined') {
+
+            // console.log(pair.bodyB);
+            drawCollision(pair.bodyB.position);
 
             //Is object A one of our bars?
             if (!pair.bodyA.isStatic) {
@@ -193,18 +201,6 @@ function initUser(obj, _id, _name, _color, _scale, _bar) {
     $('body').append(myHtml);
 }
 
-// initUser.prototype.update = function(){}
-
-// $('body').keypress(function(e) {
-//   console.log(e.keyCode);
-//   // if (e.keyCode == 13) {
-//   //   createNewUser();
-//   // }
-//   // else if(e.keyCode == 32) {
-//   //   removeUser();
-//   // }
-// });
-
 function createNewUser(user) {
 
     //Grab the user properties
@@ -244,24 +240,14 @@ function removeUser(userId) {
     $('#' + userId).remove();
 }
 
-/*------------- MY PROCESSING FUNCTIONS -------------*/
-var normalize = function(obj) {
-    var normalized = {
-        x: obj.x / (Math.abs(obj.x) + Math.abs(obj.y)),
-        y: obj.y / (Math.abs(obj.x) + Math.abs(obj.y))
-    };
-    return normalized;
-};
 
-var dist = function(x1, y1, x2, y2) {
-    var angle = Math.atan2(y1 - y2, x1 - x2);
-    var distance;
-    if ((y1 - y2) == 0) {
-        distance = (x1 - x2) / Math.cos(angle);
-    } else {
-        distance = (y1 - y2) / Math.sin(angle);
-    }
-    return distance;
-};
+/*------------- AUXILIAR FUNCTIONS -------------*/
+//Resizing the canvas to the full window size
+function resizeCanvas() {
+    screenWidth = window.innerWidth;
+    screenHeight = window.innerHeight;
 
-// createStage(1);
+    canvasPosition = myCanvas.getBoundingClientRect(); // Gets the canvas position
+    myCanvas.width = screenWidth - 4;
+    myCanvas.height = screenHeight - 4;
+}
