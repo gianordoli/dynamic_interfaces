@@ -3,7 +3,8 @@ console.log('mobilecontrol loaded');
 
 var user = {
     angle: 0,
-    scale: 1
+    scale: 1,
+    score: 0
 };
 
 // user hit join game

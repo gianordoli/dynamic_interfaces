@@ -63,6 +63,7 @@ var scene = {
                 isStatic: true
             })
         ];
+
         World.add(engine.world, scene.worldEl);
         var rand = getRandColor();
         scene.worldEl.forEach(function(v, i) {

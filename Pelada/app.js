@@ -41,13 +41,30 @@ io.sockets.on('connection', function(socket) {
         // send tutorial stage
         socket.emit('stage tutorial');
     });
+    // when a player score
+    // socket.on('user score', function(id) {
+    //     // find the right user
+    //     // console.log('score!!!');
+    //     console.log(id);
+    //     var u = user[findIndexByValue(id, user)];
+    //     if (u !== undefined) {
+    //         u.score++;
+    //         console.log(u.score);
+    //         if (u.score >= 3) {
+    //             io.sockets.emit(desktopId).emit('stage random');
+    //         }
+    //     } else {
+    //         console.log('nononono');
+    //     }
+    // });
     if (desktopId !== null) { // only desktop is already joined
         // when new user join
         socket.on('new user', function(d) {
             user.push({
                 id: socket.id,
                 name: d.name,
-                color: d.color
+                color: d.color,
+                score: d.score
             });
             socket.emit('user id', socket.id);
             io.sockets.emit('announce new user', {

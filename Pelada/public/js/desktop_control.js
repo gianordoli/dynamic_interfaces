@@ -14,7 +14,9 @@ socket.on('remove user desktop', function(userId) {
 });
 
 // STAGES
-socket.on('stage tutorial', function() {});
+socket.on('stage random', function() {
+    scene.blackhole();
+});
 
 /*------------- MATTER OBJECTS -------------*/
 // Matter module aliases
@@ -102,9 +104,10 @@ Events.on(engine, 'collisionStart', function(event) {
                 //Wait, what?! Is B the GOAL?!
             } else if (pair.bodyB.id == scene.worldEl[4].id || pair.bodyB.id == scene.worldEl[5].id) {
                 console.log('GOOOOOOOOOOOOOOOL!');
-                printGoal();
 
+                findUserThatGoal(playerWithBall);
                 //REMOVE THE BALL!
+                printGoal();
                 Composite.remove(engine.world, pair.bodyA, true);
                 createNewBall();
             }
@@ -132,8 +135,11 @@ Events.on(engine, 'collisionStart', function(event) {
                 //Wait, what?! Is A the GOAL?!
             } else if (pair.bodyA.id == scene.worldEl[4].id || pair.bodyA.id == scene.worldEl[5].id) {
                 console.log('GOOOOOOOOOOOOOOOL!');
-                printGoal();
+
+                // find a user id that has mmatter id = pair.bodyA.id;
+                findUserThatGoal(playerWithBall);
                 //REMOVE THE BALL!
+                printGoal();
                 Composite.remove(engine.world, pair.bodyB, true);
                 createNewBall();
             }
@@ -154,6 +160,15 @@ createNewBall();
 Engine.run(engine);
 scene.render();
 scene.tutorial();
+
+function findUserThatGoal(id) {
+    for (var key in users) {
+        if (users.hasOwnProperty(key) && users[key].bar.id == id.bar.id) {
+            console.log('send data to server', users[key].id);
+            socket.emit('user score', users[key].id);
+        }
+    }
+}
 
 function printGoal() {
     playSound(1, 1, 1, 1, 1);

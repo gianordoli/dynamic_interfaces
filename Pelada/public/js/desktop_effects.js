@@ -11,17 +11,16 @@ var collisionEffects = [];
 var i = 0;
 draw();
 
-function draw(){
-
-	request = requestAnimFrame(draw);
+function draw() {
+    request = requestAnimFrame(draw);
 }
 
 /*--------------- TRIANGLE ---------------*/
-function initCollisionEffect(obj, _pos){
-	obj.pos = _pos;
+function initCollisionEffect(obj, _pos) {
+    obj.pos = _pos;
 }
 
-function drawCollision(pos){
+function drawCollision(pos) {
 
     console.log(pos);
 
@@ -33,7 +32,7 @@ function drawCollision(pos){
     // ctx.arc(0, 0, 60, 60, 0, Math.PI*2, false);
     // ctx.fill();    
 
-    for(var angle = 0; angle < 360; angle += 20){
+    for (var angle = 0; angle < 360; angle += 20) {
         // var date = new Date();
         // var milis = date.getMilliseconds();                 
         // var rotateAngle = milis/400;
@@ -52,7 +51,7 @@ function drawCollision(pos){
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
-        ctx.stroke();                   
+        ctx.stroke();
     }
     ctx.restore();
 }

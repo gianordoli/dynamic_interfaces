@@ -1,63 +1,63 @@
 /*--------------- CORE FUNCTIONS ---------------*/
 window.requestAnimFrame = (function(callback) {
-  return  window.requestAnimationFrame ||
+    return window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame ||
         window.oRequestAnimationFrame ||
         window.msRequestAnimationFrame ||
-          function(callback) {
-              return window.setTimeout(callback, 1000 / 60);
-          };
+        function(callback) {
+            return window.setTimeout(callback, 1000 / 60);
+    };
 })();
-window.cancelRequestAnimFrame = ( function() {
-    return window.cancelAnimationFrame          ||
-        window.webkitCancelRequestAnimationFrame    ||
-        window.mozCancelRequestAnimationFrame       ||
-        window.oCancelRequestAnimationFrame     ||
-        window.msCancelRequestAnimationFrame        ||
+window.cancelRequestAnimFrame = (function() {
+    return window.cancelAnimationFrame ||
+        window.webkitCancelRequestAnimationFrame ||
+        window.mozCancelRequestAnimationFrame ||
+        window.oCancelRequestAnimationFrame ||
+        window.msCancelRequestAnimationFrame ||
         clearTimeout
-} )(); 
+})();
 
-var monthNames = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dec' ];
+var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-var dist = function(x1, y1, x2, y2){
-  var angle = Math.atan2(y1 - y2, x1 - x2);
-  var totalDist;
-  if( (y1 - y2) == 0 ){
-    totalDist = (x1 - x2) / Math.cos( angle );
-  }else{
-    totalDist = (y1 - y2) / Math.sin( angle );
-  }
-  return totalDist;
+var dist = function(x1, y1, x2, y2) {
+    var angle = Math.atan2(y1 - y2, x1 - x2);
+    var totalDist;
+    if ((y1 - y2) == 0) {
+        totalDist = (x1 - x2) / Math.cos(angle);
+    } else {
+        totalDist = (y1 - y2) / Math.sin(angle);
+    }
+    return totalDist;
 }
 
-var map = function(value, aMin, aMax, bMin, bMax){
+var map = function(value, aMin, aMax, bMin, bMax) {
     var srcMax = aMax - aMin,
-      dstMax = bMax - bMin,
-      adjValue = value - aMin;
+        dstMax = bMax - bMin,
+        adjValue = value - aMin;
     return (adjValue * dstMax / srcMax) + bMin;
-} 
-
-var constrain = function(value, min, max){
-  var constrained = value;
-  if(value < min){
-    constrained = min;
-  }else if(value > max){
-    constrained = max;
-  }
-  return constrained;
 }
 
-var parseHslaColor = function(h, s, l, a){
-  var myHslColor = 'hsla(' + h + ', ' + s + '%, ' + l + '%, ' + a +')';
-  //console.log('called calculateAngle function');
-  return myHslColor;
+var constrain = function(value, min, max) {
+    var constrained = value;
+    if (value < min) {
+        constrained = min;
+    } else if (value > max) {
+        constrained = max;
+    }
+    return constrained;
+}
+
+var parseHslaColor = function(h, s, l, a) {
+    var myHslColor = 'hsla(' + h + ', ' + s + '%, ' + l + '%, ' + a + ')';
+    //console.log('called calculateAngle function');
+    return myHslColor;
 }
 
 //calculate radius from area
-var getRadiusFromArea = function(area){
-  var r = Math.sqrt(area/Math.PI);
-  return r;
+var getRadiusFromArea = function(area) {
+    var r = Math.sqrt(area / Math.PI);
+    return r;
 }
 
 var daysInBetween = function(date1, date2) {
@@ -72,7 +72,7 @@ var daysInBetween = function(date1, date2) {
     var difference_ms = Math.abs(date1_ms - date2_ms);
 
     // Convert back to days and return
-    return Math.round(difference_ms/ONE_DAY);
+    return Math.round(difference_ms / ONE_DAY);
 }
 
 var normalize = function(obj) {
@@ -83,7 +83,7 @@ var normalize = function(obj) {
     return normalized;
 };
 
-var degreeToRadian = function(degrees){
-    var radians = degrees*Math.PI/180;
-    return radians
+var degreeToRadian = function(degrees) {
+    var radians = degrees * Math.PI / 180;
+    return radians;
 }
