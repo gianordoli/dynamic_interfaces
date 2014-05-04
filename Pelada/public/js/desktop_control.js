@@ -79,19 +79,45 @@ Events.on(engine, 'collisionStart', function(event) {
         var pair = pairs[i];
         // console.log(pair);
         // console.log(pair.collision);
+
+        //Shake scene!
         if(pair.collision.depth > 5){
             // console.log('shake!');
             // console.log(pair.collision);
             shake(pair.collision.normal);
         }
 
+        //Brighten the colors, IF THE COLLISION IS NOT WITH THE GOALS!
+        if(pair.bodyA.id != scene.worldEl[4].id && pair.bodyA.id != scene.worldEl[5].id &&
+           pair.bodyB.id != scene.worldEl[4].id && pair.bodyB.id != scene.worldEl[5].id){
+
+            pair.bodyA.render.fillStyle = pair.bodyA.render.fillStyle.substring(0, pair.bodyA.render.fillStyle.lastIndexOf(',') + 2) + 
+            65 + pair.bodyA.render.fillStyle.substring(pair.bodyA.render.fillStyle.lastIndexOf('%'));
+            pair.bodyA.render.strokeStyle = pair.bodyA.render.fillStyle;
+            pair.bodyB.render.fillStyle = pair.bodyB.render.fillStyle.substring(0, pair.bodyB.render.fillStyle.lastIndexOf(',') + 2) + 
+            65 + pair.bodyB.render.fillStyle.substring(pair.bodyB.render.fillStyle.lastIndexOf('%'));        
+            pair.bodyB.render.strokeStyle = pair.bodyB.render.fillStyle;
+
+            //Set colors back to normal
+            setTimeout(function(){
+            pair.bodyA.render.fillStyle = pair.bodyA.render.fillStyle.substring(0, pair.bodyA.render.fillStyle.lastIndexOf(',') + 2) + 
+            50 + pair.bodyA.render.fillStyle.substring(pair.bodyA.render.fillStyle.lastIndexOf('%'));
+            pair.bodyA.render.strokeStyle = pair.bodyA.render.fillStyle;
+            pair.bodyB.render.fillStyle = pair.bodyB.render.fillStyle.substring(0, pair.bodyB.render.fillStyle.lastIndexOf(',') + 2) + 
+            50 + pair.bodyB.render.fillStyle.substring(pair.bodyB.render.fillStyle.lastIndexOf('%'));        
+            pair.bodyB.render.strokeStyle = pair.bodyB.render.fillStyle;
+            }, 200);
+        }
+        
+
+
         //Is object A a circle?
         if (typeof pair.bodyA.circleRadius !== 'undefined') {
 
             if(pair.collision.depth > 2){
                 // console.log(pair.bodyA);
-                var collision = new Object;                                         //creating object
-                initCollision(collision, pair.bodyA.position, pair.collision.depth);//initializing
+                var collision = new Object;                                         
+                initCollision(collision, pair.bodyA.position, pair.bodyA.render.fillStyle, pair.collision.depth);
                 collisionEffects.push(collision);
             }
 
@@ -125,8 +151,8 @@ Events.on(engine, 'collisionStart', function(event) {
         } else if (typeof pair.bodyB.circleRadius !== 'undefined') {
 
             if(pair.collision.depth > 2){
-                var collision = new Object;                                         //creating object
-                initCollision(collision, pair.bodyB.position, pair.collision.depth);//initializing
+                var collision = new Object;                                         
+                initCollision(collision, pair.bodyB.position, pair.bodyA.render.fillStyle, pair.collision.depth);
                 collisionEffects.push(collision);
             }
 
@@ -185,8 +211,29 @@ function findUserThatGoal(id) {
 function printGoal() {
     playSound(1, 1, 1, 1, 1);
     $('#goalBanner').css('opacity', 1).html('You did it ' + playerWithBall.name + '!');
-    // player grows
-    playerWithBall.bar.render.lineWidth += 7;
+
+    //Creating a new body for the player
+    var newBar = Bodies.polygon(playerWithBall.bar.position.x,
+                                playerWithBall.bar.position.y,
+                                playerWithBall.nSides + 1,
+                                playerWithBall.radius + 5,
+                                { friction: 0.001,
+                                  restitution: 0.05,
+                                  density: 0.001,
+                                });
+    newBar.render.fillStyle = playerWithBall.color;
+    newBar.render.strokeStyle = playerWithBall.color;
+    
+    //Removing the old body from the world and adding the new one
+    Composite.remove(engine.world, playerWithBall.bar, true);    
+    World.add(engine.world, newBar);    
+
+    //Updating the user properties
+    playerWithBall.bar = newBar;
+    playerWithBall.nSides ++;
+    playerWithBall.radius += 5;
+
+
     playerWithBall = '';
     setTimeout(function() {
         $('#goalBanner').css('opacity', 0);
@@ -197,14 +244,17 @@ function printGoal() {
 //ASSOCIATIVE ARRAY!!!!
 var users = {};
 
-function initUser(obj, _id, _name, _color, _scale, _bar) {
+function initUser(obj, _id, _name, _color, _bar, _nSides, _radius) {
     //Variables
     obj.id = _id;
     obj.name = _name;
     obj.color = _color;
-    obj.scale = _scale;
 
     obj.bar = _bar;
+    obj.nSides = _nSides;
+    obj.radius = _radius;
+
+    // console.log(obj.bar);
 
     obj.update = function(_force) {
 
@@ -238,7 +288,12 @@ function createNewUser(user) {
     //Creates a new bar
     var x = 10 + ~~(Math.random() * 200);
     var y = 10 + ~~(Math.random() * 200);
-    var bar = Bodies.rectangle(x, y, 30, 30, {
+    // var bar = Bodies.rectangle(x, y, 30, 30, {
+    //     friction: 0.001,
+    //     restitution: 0.05,
+    //     density: 0.001,
+    // });
+    var bar = Bodies.polygon(x, y, 4, 30, {
         friction: 0.001,
         restitution: 0.05,
         density: 0.001,
@@ -249,7 +304,7 @@ function createNewUser(user) {
 
     //Creates a new user object and add it to the array
     var newUser = new Object();
-    initUser(newUser, id, name, color, 1, bar);
+    initUser(newUser, id, name, color, bar, 4, 30);
     console.log(newUser);
     users[id] = newUser;
     // console.log(users);
