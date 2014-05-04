@@ -81,42 +81,42 @@ Events.on(engine, 'collisionStart', function(event) {
         // console.log(pair.collision);
 
         //Shake scene!
-        if(pair.collision.depth > 5){
+        if (pair.collision.depth > 5) {
             // console.log('shake!');
             // console.log(pair.collision);
             shake(pair.collision.normal);
         }
 
         //Brighten the colors, IF THE COLLISION IS NOT WITH THE GOALS!
-        if(pair.bodyA.id != scene.worldEl[4].id && pair.bodyA.id != scene.worldEl[5].id &&
-           pair.bodyB.id != scene.worldEl[4].id && pair.bodyB.id != scene.worldEl[5].id){
+        if (pair.bodyA.id != scene.worldEl[4].id && pair.bodyA.id != scene.worldEl[5].id &&
+            pair.bodyB.id != scene.worldEl[4].id && pair.bodyB.id != scene.worldEl[5].id) {
 
-            pair.bodyA.render.fillStyle = pair.bodyA.render.fillStyle.substring(0, pair.bodyA.render.fillStyle.lastIndexOf(',') + 2) + 
-            65 + pair.bodyA.render.fillStyle.substring(pair.bodyA.render.fillStyle.lastIndexOf('%'));
+            pair.bodyA.render.fillStyle = pair.bodyA.render.fillStyle.substring(0, pair.bodyA.render.fillStyle.lastIndexOf(',') + 2) +
+                65 + pair.bodyA.render.fillStyle.substring(pair.bodyA.render.fillStyle.lastIndexOf('%'));
             pair.bodyA.render.strokeStyle = pair.bodyA.render.fillStyle;
-            pair.bodyB.render.fillStyle = pair.bodyB.render.fillStyle.substring(0, pair.bodyB.render.fillStyle.lastIndexOf(',') + 2) + 
-            65 + pair.bodyB.render.fillStyle.substring(pair.bodyB.render.fillStyle.lastIndexOf('%'));        
+            pair.bodyB.render.fillStyle = pair.bodyB.render.fillStyle.substring(0, pair.bodyB.render.fillStyle.lastIndexOf(',') + 2) +
+                65 + pair.bodyB.render.fillStyle.substring(pair.bodyB.render.fillStyle.lastIndexOf('%'));
             pair.bodyB.render.strokeStyle = pair.bodyB.render.fillStyle;
 
             //Set colors back to normal
-            setTimeout(function(){
-            pair.bodyA.render.fillStyle = pair.bodyA.render.fillStyle.substring(0, pair.bodyA.render.fillStyle.lastIndexOf(',') + 2) + 
-            50 + pair.bodyA.render.fillStyle.substring(pair.bodyA.render.fillStyle.lastIndexOf('%'));
-            pair.bodyA.render.strokeStyle = pair.bodyA.render.fillStyle;
-            pair.bodyB.render.fillStyle = pair.bodyB.render.fillStyle.substring(0, pair.bodyB.render.fillStyle.lastIndexOf(',') + 2) + 
-            50 + pair.bodyB.render.fillStyle.substring(pair.bodyB.render.fillStyle.lastIndexOf('%'));        
-            pair.bodyB.render.strokeStyle = pair.bodyB.render.fillStyle;
+            setTimeout(function() {
+                pair.bodyA.render.fillStyle = pair.bodyA.render.fillStyle.substring(0, pair.bodyA.render.fillStyle.lastIndexOf(',') + 2) +
+                    50 + pair.bodyA.render.fillStyle.substring(pair.bodyA.render.fillStyle.lastIndexOf('%'));
+                pair.bodyA.render.strokeStyle = pair.bodyA.render.fillStyle;
+                pair.bodyB.render.fillStyle = pair.bodyB.render.fillStyle.substring(0, pair.bodyB.render.fillStyle.lastIndexOf(',') + 2) +
+                    50 + pair.bodyB.render.fillStyle.substring(pair.bodyB.render.fillStyle.lastIndexOf('%'));
+                pair.bodyB.render.strokeStyle = pair.bodyB.render.fillStyle;
             }, 200);
         }
-        
+
 
 
         //Is object A a circle?
         if (typeof pair.bodyA.circleRadius !== 'undefined') {
 
-            if(pair.collision.depth > 2){
+            if (pair.collision.depth > 2) {
                 // console.log(pair.bodyA);
-                var collision = new Object;                                         
+                var collision = new Object;
                 initCollision(collision, pair.bodyA.position, pair.bodyA.render.fillStyle, pair.collision.depth);
                 collisionEffects.push(collision);
             }
@@ -150,8 +150,8 @@ Events.on(engine, 'collisionStart', function(event) {
             //Is object B a circle?
         } else if (typeof pair.bodyB.circleRadius !== 'undefined') {
 
-            if(pair.collision.depth > 2){
-                var collision = new Object;                                         
+            if (pair.collision.depth > 2) {
+                var collision = new Object;
                 initCollision(collision, pair.bodyB.position, pair.bodyA.render.fillStyle, pair.collision.depth);
                 collisionEffects.push(collision);
             }
@@ -202,35 +202,38 @@ scene.tutorial();
 function findUserThatGoal(id) {
     for (var key in users) {
         if (users.hasOwnProperty(key) && users[key].bar.id == id.bar.id) {
-            console.log('send data to server', users[key].id);
-            socket.emit('user score', users[key].id);
+            console.log(users[key]);
+            users[key].score += 1;
+            if (users[key].score >= 3) {
+                scene.blackhole();
+            }
         }
     }
 }
 
 function printGoal() {
-    playSound(1, 1, 1, 1, 1);
+    playSound(2, 1, 1, 1, 1);
     $('#goalBanner').css('opacity', 1).html('You did it ' + playerWithBall.name + '!');
 
     //Creating a new body for the player
     var newBar = Bodies.polygon(playerWithBall.bar.position.x,
-                                playerWithBall.bar.position.y,
-                                playerWithBall.nSides + 1,
-                                playerWithBall.radius + 5,
-                                { friction: 0.001,
-                                  restitution: 0.05,
-                                  density: 0.001,
-                                });
+        playerWithBall.bar.position.y,
+        playerWithBall.nSides + 1,
+        playerWithBall.radius + 5, {
+            friction: 0.001,
+            restitution: 0.05,
+            density: 0.001,
+        });
     newBar.render.fillStyle = playerWithBall.color;
     newBar.render.strokeStyle = playerWithBall.color;
-    
+
     //Removing the old body from the world and adding the new one
-    Composite.remove(engine.world, playerWithBall.bar, true);    
-    World.add(engine.world, newBar);    
+    Composite.remove(engine.world, playerWithBall.bar, true);
+    World.add(engine.world, newBar);
 
     //Updating the user properties
     playerWithBall.bar = newBar;
-    playerWithBall.nSides ++;
+    playerWithBall.nSides++;
     playerWithBall.radius += 5;
 
 
@@ -244,11 +247,12 @@ function printGoal() {
 //ASSOCIATIVE ARRAY!!!!
 var users = {};
 
-function initUser(obj, _id, _name, _color, _bar, _nSides, _radius) {
+function initUser(obj, _id, _name, _color, _bar, _nSides, _radius, _score) {
     //Variables
     obj.id = _id;
     obj.name = _name;
     obj.color = _color;
+    obj.score = _score;
 
     obj.bar = _bar;
     obj.nSides = _nSides;
@@ -284,6 +288,7 @@ function createNewUser(user) {
     var id = user.id;
     var name = user.name;
     var color = user.color;
+    var score = 0;
 
     //Creates a new bar
     var x = 10 + ~~(Math.random() * 200);
@@ -304,7 +309,7 @@ function createNewUser(user) {
 
     //Creates a new user object and add it to the array
     var newUser = new Object();
-    initUser(newUser, id, name, color, bar, 4, 30);
+    initUser(newUser, id, name, color, bar, 4, 30, score);
     console.log(newUser);
     users[id] = newUser;
     // console.log(users);

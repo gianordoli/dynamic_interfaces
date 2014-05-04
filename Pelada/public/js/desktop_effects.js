@@ -43,7 +43,7 @@ function shake(normal) {
         distance: 5,
         times: 2
     }, "fast");
-
+    playSound(3, 1, 1, 1, 1);
     // selector.effect( "bounce", {arguments}, speed );
     // Arguments:
     // direction: The direction of the effect. Can be "up", "down", "left", "right". Default is "up".
