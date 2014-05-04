@@ -1,3 +1,7 @@
+//This variable will be set to true by the 'desktopEffects file'
+//It triggers the rendering of the effects layer
+var isEffectLoaded = false;
+
 /**
  * matter-0.7.0.js 0.7.0-alpha 2014-04-01
  * http://brm.io/matter-js/
@@ -2941,6 +2945,11 @@
                  * @param {} event.name The name of the event
                  */
                 Events.trigger(engine, 'afterTick afterRender', event);
+
+                if(isEffectLoaded){
+                    draw();
+                }
+                
             })();
         };
 
