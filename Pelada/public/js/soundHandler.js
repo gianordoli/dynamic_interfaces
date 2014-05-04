@@ -1,7 +1,7 @@
 // webkitaudio
 var PATH = 'snd/',
 
-    SOUNDS = ['TechnoDrum', 'intro'];
+    SOUNDS = ['TechnoDrum', 'intro', 'Powerup', 'Explosion', 'Hit_Hurt'];
 
 var myAudioContext, myAudioAnalyser, myBuffers = {},
     mySource, myNodes = {},

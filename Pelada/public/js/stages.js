@@ -6,6 +6,7 @@ var scene = {
     thickness: 20,
     center: [this.w / 2, this.h / 2],
     worldEl: [],
+    blackholeEl: [],
     tutorial: function() {
         console.log('rendering tutorial');
         this.curr = '> tutorial';
@@ -15,8 +16,16 @@ var scene = {
     blackhole: function() {
         console.log('rendering blackhole');
         this.curr = '> blackhole';
-        $('#stageTitle').html('BLACKHOLE').css('color', 'white');
-        $('#stageInfo').html('Beware of the blackhole!').css('color', 'white');
+        $('#stageTitle').html('BLACKHOLE').css('color', 'black');
+        $('#stageInfo').html('Beware of the blackhole!').css('color', 'black');
+        var side = ~~ (Math.random() * 20 + 10),
+            size = ~~ (Math.random() * 100 + 200);
+        this.blackholeEl = [
+            Bodies.polygon(this.w / 2, this.h / 2 - 85, side, size, {
+                isStatic: false
+            })
+        ];
+        World.add(engine.world, scene.blackholeEl);
     },
     jungle: function() {
         console.log('rendering jungle');

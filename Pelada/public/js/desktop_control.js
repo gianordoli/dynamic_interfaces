@@ -79,7 +79,7 @@ Events.on(engine, 'collisionStart', function(event) {
         var pair = pairs[i];
         // console.log(pair);
         // console.log(pair.collision);
-        if(pair.collision.depth > 5){
+        if (pair.collision.depth > 5) {
             // console.log('shake!');
             // console.log(pair.collision);
             shake(pair.collision.normal);
@@ -88,10 +88,10 @@ Events.on(engine, 'collisionStart', function(event) {
         //Is object A a circle?
         if (typeof pair.bodyA.circleRadius !== 'undefined') {
 
-            if(pair.collision.depth > 2){
+            if (pair.collision.depth > 2) {
                 // console.log(pair.bodyA);
-                var collision = new Object;                                         //creating object
-                initCollision(collision, pair.bodyA.position, pair.collision.depth);//initializing
+                var collision = new Object; //creating object
+                initCollision(collision, pair.bodyA.position, pair.collision.depth); //initializing
                 collisionEffects.push(collision);
             }
 
@@ -124,9 +124,9 @@ Events.on(engine, 'collisionStart', function(event) {
             //Is object B a circle?
         } else if (typeof pair.bodyB.circleRadius !== 'undefined') {
 
-            if(pair.collision.depth > 2){
-                var collision = new Object;                                         //creating object
-                initCollision(collision, pair.bodyB.position, pair.collision.depth);//initializing
+            if (pair.collision.depth > 2) {
+                var collision = new Object; //creating object
+                initCollision(collision, pair.bodyB.position, pair.collision.depth); //initializing
                 collisionEffects.push(collision);
             }
 
@@ -176,14 +176,17 @@ scene.tutorial();
 function findUserThatGoal(id) {
     for (var key in users) {
         if (users.hasOwnProperty(key) && users[key].bar.id == id.bar.id) {
-            console.log('send data to server', users[key].id);
-            socket.emit('user score', users[key].id);
+            console.log(users[key]);
+            users[key].score += 1;
+            if (users[key].score >= 3) {
+                scene.blackhole();
+            }
         }
     }
 }
 
 function printGoal() {
-    playSound(1, 1, 1, 1, 1);
+    playSound(2, 1, 1, 1, 1);
     $('#goalBanner').css('opacity', 1).html('You did it ' + playerWithBall.name + '!');
     // player grows
     playerWithBall.bar.render.lineWidth += 7;
@@ -197,12 +200,13 @@ function printGoal() {
 //ASSOCIATIVE ARRAY!!!!
 var users = {};
 
-function initUser(obj, _id, _name, _color, _scale, _bar) {
+function initUser(obj, _id, _name, _color, _scale, _bar, _score) {
     //Variables
     obj.id = _id;
     obj.name = _name;
     obj.color = _color;
     obj.scale = _scale;
+    obj.score = _score
 
     obj.bar = _bar;
 
@@ -234,6 +238,7 @@ function createNewUser(user) {
     var id = user.id;
     var name = user.name;
     var color = user.color;
+    var score = 0;
 
     //Creates a new bar
     var x = 10 + ~~(Math.random() * 200);
@@ -249,7 +254,7 @@ function createNewUser(user) {
 
     //Creates a new user object and add it to the array
     var newUser = new Object();
-    initUser(newUser, id, name, color, 1, bar);
+    initUser(newUser, id, name, color, 1, bar, score);
     console.log(newUser);
     users[id] = newUser;
     // console.log(users);
