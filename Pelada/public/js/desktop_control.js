@@ -78,13 +78,22 @@ Events.on(engine, 'collisionStart', function(event) {
     for (var i = 0; i < pairs.length; i++) {
         var pair = pairs[i];
         // console.log(pair);
-        // console.log(pair.collision.tangent.x);
+        // console.log(pair.collision);
+        if(pair.collision.depth > 5){
+            // console.log('shake!');
+            // console.log(pair.collision);
+            shake(pair.collision.normal);
+        }
 
         //Is object A a circle?
         if (typeof pair.bodyA.circleRadius !== 'undefined') {
 
-            // console.log(pair.bodyA);
-            drawCollision(pair.bodyA.position);
+            if(pair.collision.depth > 2){
+                // console.log(pair.bodyA);
+                var collision = new Object;                                         //creating object
+                initCollision(collision, pair.bodyA.position, pair.collision.depth);//initializing
+                collisionEffects.push(collision);
+            }
 
             //Is object B one of our bars?
             if (!pair.bodyB.isStatic) {
@@ -115,8 +124,11 @@ Events.on(engine, 'collisionStart', function(event) {
             //Is object B a circle?
         } else if (typeof pair.bodyB.circleRadius !== 'undefined') {
 
-            // console.log(pair.bodyB);
-            drawCollision(pair.bodyB.position);
+            if(pair.collision.depth > 2){
+                var collision = new Object;                                         //creating object
+                initCollision(collision, pair.bodyB.position, pair.collision.depth);//initializing
+                collisionEffects.push(collision);
+            }
 
             //Is object A one of our bars?
             if (!pair.bodyA.isStatic) {
@@ -253,16 +265,4 @@ function removeUser(userId) {
     //Remove user object
     delete users[userId];
     $('#' + userId).remove();
-}
-
-
-/*------------- AUXILIAR FUNCTIONS -------------*/
-//Resizing the canvas to the full window size
-function resizeCanvas() {
-    screenWidth = window.innerWidth;
-    screenHeight = window.innerHeight;
-
-    canvasPosition = myCanvas.getBoundingClientRect(); // Gets the canvas position
-    myCanvas.width = screenWidth - 4;
-    myCanvas.height = screenHeight - 4;
 }

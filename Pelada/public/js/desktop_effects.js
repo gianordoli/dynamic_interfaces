@@ -3,55 +3,102 @@
 //We need that because matter.js creates — and updates  — its own canvas 
 var myCanvas = document.getElementById('canvas-effects');
 var ctx = myCanvas.getContext('2d');
-resizeCanvas();
-
-var request;
-
 var collisionEffects = [];
-var i = 0;
-draw();
+
+setup();
+
+function setup() {
+    isEffectLoaded = true;
+    resizeCanvas();
+    console.log('setup');
+}
 
 function draw() {
-    request = requestAnimFrame(draw);
+    ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+    // console.log(collisionEffects.length);
+
+    collisionEffects.forEach(function(obj, index) {
+        // console.log(obj.pos.x);
+        obj.draw(index);
+    });
+
+    // request = requestAnimFrame(draw);
 }
 
-/*--------------- TRIANGLE ---------------*/
-function initCollisionEffect(obj, _pos) {
-    obj.pos = _pos;
-}
-
-function drawCollision(pos) {
-
-    console.log(pos);
-
-    ctx.save();
-    ctx.translate(pos.x, pos.y);
-
-    // ctx.fillStyle = parseHslaColor(0, 0, 0, 0.3);
-    // ctx.beginPath();
-    // ctx.arc(0, 0, 60, 60, 0, Math.PI*2, false);
-    // ctx.fill();    
-
-    for (var angle = 0; angle < 360; angle += 20) {
-        // var date = new Date();
-        // var milis = date.getMilliseconds();                 
-        // var rotateAngle = milis/400;
-        var rotateAngle = 0;
-
-        var radius = 30;
-        var x1 = Math.cos(degreeToRadian(angle) + rotateAngle) * radius;
-        var y1 = Math.sin(degreeToRadian(angle) + rotateAngle) * radius;
-
-        radius = 60;
-        var x2 = Math.cos(degreeToRadian(angle) + rotateAngle) * radius;
-        var y2 = Math.sin(degreeToRadian(angle) + rotateAngle) * radius;
-
-        ctx.strokeStyle = parseHslaColor(0, 0, 0, 0.3);
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
+function shake(normal) {
+    // console.log('shake');
+    var shakeDirection;
+    if (normal.x == 1) {
+        shakeDirection = 'right';
+    } else if (normal.x == -1) {
+        shakeDirection = 'left';
+    } else if (normal.y == 1) {
+        shakeDirection = 'down';
+    } else if (normal.y == -1) {
+        shakeDirection = 'up';
     }
-    ctx.restore();
+    console.log(shakeDirection);
+    $('#canvas-container').effect("bounce", {
+        direction: shakeDirection,
+        distance: 5,
+        times: 2
+    }, "fast");
+
+    // selector.effect( "bounce", {arguments}, speed );
+    // Arguments:
+    // direction: The direction of the effect. Can be "up", "down", "left", "right". Default is "up".
+    // distance: Distance to bounce. Default is 20
+    // mode: The mode of the effect. Can be "show", "hide" or "effect". Default is "effect".
+    // times: Times to bounce. Default is 5.
+
+}
+
+/*--------------- COLLISION ---------------*/
+function initCollision(obj, _pos, depth) {
+    //vars
+    obj.pos = _pos;
+    var d = new Date();
+    obj.timer = d.getTime() + 300;
+    obj.radius = depth * 5;
+
+    //functions
+    obj.draw = drawCollision;
+}
+
+function drawCollision(index) {
+    var d = new Date();
+    // console.log('millis: ' + d.getTime() + ', timer: ' + this.timer);
+    if (this.timer > d.getTime()) {
+        ctx.save();
+        ctx.translate(this.pos.x, this.pos.y);
+
+        for (var angle = 0; angle < 360; angle += 20) {
+
+            var innerAlertRadius = map(this.timer - d.getTime(),
+                150, 0,
+                1.2, 2);
+            var outerAlertRadius = map(this.timer - d.getTime(),
+                300, 150,
+                1.2, 2);
+            innerAlertRadius = constrain(innerAlertRadius, 1.2, 2);
+            outerAlertRadius = constrain(outerAlertRadius, 1.2, 2);
+            var rotateAngle = 0;
+
+            var x1 = Math.cos(degreeToRadian(angle) + rotateAngle) * this.radius * innerAlertRadius;
+            var y1 = Math.sin(degreeToRadian(angle) + rotateAngle) * this.radius * innerAlertRadius;
+
+            var x2 = Math.cos(degreeToRadian(angle) + rotateAngle) * this.radius * outerAlertRadius;
+            var y2 = Math.sin(degreeToRadian(angle) + rotateAngle) * this.radius * outerAlertRadius;
+
+            ctx.strokeStyle = parseHslaColor(0, 0, 0, 0.3);
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+        ctx.restore();
+    } else {
+        collisionEffects.splice(index, 1);
+    }
 }

@@ -73,7 +73,7 @@ var daysInBetween = function(date1, date2) {
 
     // Convert back to days and return
     return Math.round(difference_ms / ONE_DAY);
-}
+};
 
 var normalize = function(obj) {
     var normalized = {
@@ -86,4 +86,13 @@ var normalize = function(obj) {
 var degreeToRadian = function(degrees) {
     var radians = degrees * Math.PI / 180;
     return radians;
+};
+
+function resizeCanvas() {
+    screenWidth = window.innerWidth;
+    screenHeight = window.innerHeight;
+
+    canvasPosition = myCanvas.getBoundingClientRect(); // Gets the canvas position
+    myCanvas.width = screenWidth - 4;
+    myCanvas.height = screenHeight - 4;
 }
