@@ -53,7 +53,8 @@ function shake(normal){
 function initCollision(obj, _pos, strokeStyle, depth){
     //vars
 	obj.pos = _pos;    
-    obj.strokeStyle = strokeStyle;
+    // obj.strokeStyle = strokeStyle;
+    obj.strokeStyle = parseHslaColor(0, 0, 0, 0.3);
     var d = new Date();
     obj.timer = d.getTime() + 300;
     obj.radius = depth * 5;

@@ -85,23 +85,28 @@ Events.on(engine, 'collisionStart', function(event) {
             shake(pair.collision.normal);
         }
 
-        //Brighten the colors
-        pair.bodyA.render.fillStyle = pair.bodyA.render.fillStyle.substring(0, pair.bodyA.render.fillStyle.lastIndexOf(',') + 2) + 
-        65 + pair.bodyA.render.fillStyle.substring(pair.bodyA.render.fillStyle.lastIndexOf('%'));
-        pair.bodyA.render.strokeStyle = pair.bodyA.render.fillStyle;
-        pair.bodyB.render.fillStyle = pair.bodyB.render.fillStyle.substring(0, pair.bodyB.render.fillStyle.lastIndexOf(',') + 2) + 
-        65 + pair.bodyB.render.fillStyle.substring(pair.bodyB.render.fillStyle.lastIndexOf('%'));        
-        pair.bodyB.render.strokeStyle = pair.bodyB.render.fillStyle;
+        //Brighten the colors, IF THE COLLISION IS NOT WITH THE GOALS!
+        if(pair.bodyA.id != scene.worldEl[4].id && pair.bodyA.id != scene.worldEl[5].id &&
+           pair.bodyB.id != scene.worldEl[4].id && pair.bodyB.id != scene.worldEl[5].id){
 
-        //Set colors back to normal
-        setTimeout(function(){
-        pair.bodyA.render.fillStyle = pair.bodyA.render.fillStyle.substring(0, pair.bodyA.render.fillStyle.lastIndexOf(',') + 2) + 
-        50 + pair.bodyA.render.fillStyle.substring(pair.bodyA.render.fillStyle.lastIndexOf('%'));
-        pair.bodyA.render.strokeStyle = pair.bodyA.render.fillStyle;
-        pair.bodyB.render.fillStyle = pair.bodyB.render.fillStyle.substring(0, pair.bodyB.render.fillStyle.lastIndexOf(',') + 2) + 
-        50 + pair.bodyB.render.fillStyle.substring(pair.bodyB.render.fillStyle.lastIndexOf('%'));        
-        pair.bodyB.render.strokeStyle = pair.bodyB.render.fillStyle;
-        }, 200);
+            pair.bodyA.render.fillStyle = pair.bodyA.render.fillStyle.substring(0, pair.bodyA.render.fillStyle.lastIndexOf(',') + 2) + 
+            65 + pair.bodyA.render.fillStyle.substring(pair.bodyA.render.fillStyle.lastIndexOf('%'));
+            pair.bodyA.render.strokeStyle = pair.bodyA.render.fillStyle;
+            pair.bodyB.render.fillStyle = pair.bodyB.render.fillStyle.substring(0, pair.bodyB.render.fillStyle.lastIndexOf(',') + 2) + 
+            65 + pair.bodyB.render.fillStyle.substring(pair.bodyB.render.fillStyle.lastIndexOf('%'));        
+            pair.bodyB.render.strokeStyle = pair.bodyB.render.fillStyle;
+
+            //Set colors back to normal
+            setTimeout(function(){
+            pair.bodyA.render.fillStyle = pair.bodyA.render.fillStyle.substring(0, pair.bodyA.render.fillStyle.lastIndexOf(',') + 2) + 
+            50 + pair.bodyA.render.fillStyle.substring(pair.bodyA.render.fillStyle.lastIndexOf('%'));
+            pair.bodyA.render.strokeStyle = pair.bodyA.render.fillStyle;
+            pair.bodyB.render.fillStyle = pair.bodyB.render.fillStyle.substring(0, pair.bodyB.render.fillStyle.lastIndexOf(',') + 2) + 
+            50 + pair.bodyB.render.fillStyle.substring(pair.bodyB.render.fillStyle.lastIndexOf('%'));        
+            pair.bodyB.render.strokeStyle = pair.bodyB.render.fillStyle;
+            }, 200);
+        }
+        
 
 
         //Is object A a circle?
@@ -244,7 +249,12 @@ function createNewUser(user) {
     //Creates a new bar
     var x = 10 + ~~(Math.random() * 200);
     var y = 10 + ~~(Math.random() * 200);
-    var bar = Bodies.rectangle(x, y, 30, 30, {
+    // var bar = Bodies.rectangle(x, y, 30, 30, {
+    //     friction: 0.001,
+    //     restitution: 0.05,
+    //     density: 0.001,
+    // });
+    var bar = Bodies.polygon(x, y, 4, 30, {
         friction: 0.001,
         restitution: 0.05,
         density: 0.001,
