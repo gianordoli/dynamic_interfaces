@@ -196,8 +196,29 @@ scene.tutorial();
 function printGoal() {
     playSound(1, 1, 1, 1, 1);
     $('#goalBanner').css('opacity', 1).html('You did it ' + playerWithBall.name + '!');
-    // player grows
-    playerWithBall.bar.render.lineWidth += 7;
+
+    //Creating a new body for the player
+    var newBar = Bodies.polygon(playerWithBall.bar.position.x,
+                                playerWithBall.bar.position.y,
+                                playerWithBall.nSides + 1,
+                                playerWithBall.radius + 5,
+                                { friction: 0.001,
+                                  restitution: 0.05,
+                                  density: 0.001,
+                                });
+    newBar.render.fillStyle = playerWithBall.color;
+    newBar.render.strokeStyle = playerWithBall.color;
+    
+    //Removing the old body from the world and adding the new one
+    Composite.remove(engine.world, playerWithBall.bar, true);    
+    World.add(engine.world, newBar);    
+
+    //Updating the user properties
+    playerWithBall.bar = newBar;
+    playerWithBall.nSides ++;
+    playerWithBall.radius += 5;
+
+
     playerWithBall = '';
     setTimeout(function() {
         $('#goalBanner').css('opacity', 0);
@@ -208,14 +229,17 @@ function printGoal() {
 //ASSOCIATIVE ARRAY!!!!
 var users = {};
 
-function initUser(obj, _id, _name, _color, _scale, _bar) {
+function initUser(obj, _id, _name, _color, _bar, _nSides, _radius) {
     //Variables
     obj.id = _id;
     obj.name = _name;
     obj.color = _color;
-    obj.scale = _scale;
 
     obj.bar = _bar;
+    obj.nSides = _nSides;
+    obj.radius = _radius;
+
+    // console.log(obj.bar);
 
     obj.update = function(_force) {
 
@@ -265,7 +289,7 @@ function createNewUser(user) {
 
     //Creates a new user object and add it to the array
     var newUser = new Object();
-    initUser(newUser, id, name, color, 1, bar);
+    initUser(newUser, id, name, color, bar, 4, 30);
     console.log(newUser);
     users[id] = newUser;
     // console.log(users);
