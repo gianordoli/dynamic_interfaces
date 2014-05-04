@@ -77,19 +77,40 @@ Events.on(engine, 'collisionStart', function(event) {
         var pair = pairs[i];
         // console.log(pair);
         // console.log(pair.collision);
+
+        //Shake scene!
         if(pair.collision.depth > 5){
             // console.log('shake!');
             // console.log(pair.collision);
             shake(pair.collision.normal);
         }
 
+        //Brighten the colors
+        pair.bodyA.render.fillStyle = pair.bodyA.render.fillStyle.substring(0, pair.bodyA.render.fillStyle.lastIndexOf(',') + 2) + 
+        65 + pair.bodyA.render.fillStyle.substring(pair.bodyA.render.fillStyle.lastIndexOf('%'));
+        pair.bodyA.render.strokeStyle = pair.bodyA.render.fillStyle;
+        pair.bodyB.render.fillStyle = pair.bodyB.render.fillStyle.substring(0, pair.bodyB.render.fillStyle.lastIndexOf(',') + 2) + 
+        65 + pair.bodyB.render.fillStyle.substring(pair.bodyB.render.fillStyle.lastIndexOf('%'));        
+        pair.bodyB.render.strokeStyle = pair.bodyB.render.fillStyle;
+
+        //Set colors back to normal
+        setTimeout(function(){
+        pair.bodyA.render.fillStyle = pair.bodyA.render.fillStyle.substring(0, pair.bodyA.render.fillStyle.lastIndexOf(',') + 2) + 
+        50 + pair.bodyA.render.fillStyle.substring(pair.bodyA.render.fillStyle.lastIndexOf('%'));
+        pair.bodyA.render.strokeStyle = pair.bodyA.render.fillStyle;
+        pair.bodyB.render.fillStyle = pair.bodyB.render.fillStyle.substring(0, pair.bodyB.render.fillStyle.lastIndexOf(',') + 2) + 
+        50 + pair.bodyB.render.fillStyle.substring(pair.bodyB.render.fillStyle.lastIndexOf('%'));        
+        pair.bodyB.render.strokeStyle = pair.bodyB.render.fillStyle;
+        }, 200);
+
+
         //Is object A a circle?
         if (typeof pair.bodyA.circleRadius !== 'undefined') {
 
             if(pair.collision.depth > 2){
                 // console.log(pair.bodyA);
-                var collision = new Object;                                         //creating object
-                initCollision(collision, pair.bodyA.position, pair.collision.depth);//initializing
+                var collision = new Object;                                         
+                initCollision(collision, pair.bodyA.position, pair.bodyA.render.fillStyle, pair.collision.depth);
                 collisionEffects.push(collision);
             }
 
@@ -122,8 +143,8 @@ Events.on(engine, 'collisionStart', function(event) {
         } else if (typeof pair.bodyB.circleRadius !== 'undefined') {
 
             if(pair.collision.depth > 2){
-                var collision = new Object;                                         //creating object
-                initCollision(collision, pair.bodyB.position, pair.collision.depth);//initializing
+                var collision = new Object;                                         
+                initCollision(collision, pair.bodyB.position, pair.bodyA.render.fillStyle, pair.collision.depth);
                 collisionEffects.push(collision);
             }
 

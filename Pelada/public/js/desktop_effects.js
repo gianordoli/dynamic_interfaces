@@ -50,9 +50,10 @@ function shake(normal){
 }
 
 /*--------------- COLLISION ---------------*/
-function initCollision(obj, _pos, depth){
+function initCollision(obj, _pos, strokeStyle, depth){
     //vars
 	obj.pos = _pos;    
+    obj.strokeStyle = strokeStyle;
     var d = new Date();
     obj.timer = d.getTime() + 300;
     obj.radius = depth * 5;
@@ -87,7 +88,7 @@ function drawCollision(index){
             var x2 = Math.cos(degreeToRadian(angle) + rotateAngle) * this.radius * outerAlertRadius;
             var y2 = Math.sin(degreeToRadian(angle) + rotateAngle) * this.radius * outerAlertRadius;
 
-            ctx.strokeStyle = parseHslaColor(0, 0, 0, 0.3);
+            ctx.strokeStyle = this.strokeStyle;
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.moveTo(x1, y1);
