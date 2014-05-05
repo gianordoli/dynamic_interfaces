@@ -47,7 +47,8 @@ io.sockets.on('connection', function(socket) {
             user.push({
                 id: socket.id,
                 name: d.name,
-                color: d.color
+                color: d.color,
+                score: d.score
             });
             socket.emit('user id', socket.id);
             io.sockets.emit('announce new user', {

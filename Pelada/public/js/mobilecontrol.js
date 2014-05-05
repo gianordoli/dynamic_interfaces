@@ -3,7 +3,8 @@ console.log('mobilecontrol loaded');
 
 var user = {
     angle: 0,
-    scale: 1
+    scale: 1,
+    score: 0
 };
 
 // user hit join game
@@ -115,7 +116,8 @@ socket.on('announce disconnected user', function(d) {
 // helper
 function getRandColor() {
     var h = ~~ (Math.random() * 360);
-    return 'hsl(' + h + ', 75%, 50%)';
+    var s = ~~ ((Math.random() * 75) + 50);
+    return 'hsl(' + h + ',' + s + '%, 50%)';
 }
 
 function centerObj(obj) {
