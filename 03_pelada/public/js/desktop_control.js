@@ -213,9 +213,27 @@ function findUserThatGoal(id) {
 }
 
 function printGoal() {
+    //Sound
     playSound(2, 1, 1, 1, 1);
-    $('#goalBanner').css('opacity', 1).html('You did it ' + playerWithBall.name + '!');
 
+    //Banner
+    $('#goalBanner').css({left: window.innerWidth/2 - 200});
+    $('#goalBanner').html('<i><br><br><h1>GOAL!</h1>' + playerWithBall.name +'</i>');
+    var newTop = window.innerHeight * 0.5 - 200 + 'px';
+    console.log(newTop);
+    $('#goalBanner').animate({
+        top: newTop
+        },
+        1000,
+        'easeOutBack',
+        function(){
+            setTimeout(function(){
+                console.log('hey');
+                $('#goalBanner').animate({top: '-500px'}, 500, 'easeInBack');
+            }, 500);
+        });
+
+    //Changing player
     if (playerWithBall.nSides < 7) {
         //Creating a new body for the player
         var newBar = Bodies.polygon(playerWithBall.bar.position.x,
@@ -245,9 +263,6 @@ function printGoal() {
     }
 
     playerWithBall = '';
-    setTimeout(function() {
-        $('#goalBanner').css('opacity', 0);
-    }, 5000);
 }
 
 /*------------- USERS -------------*/
