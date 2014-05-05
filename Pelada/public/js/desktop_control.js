@@ -217,7 +217,7 @@ function printGoal() {
         //Updating the user properties
         playerWithBall.bar = newBar;
         playerWithBall.nSides ++;
-        playerWithBall.radius += 5;        
+        playerWithBall.radius += 2;        
     }else if(playerWithBall.nSides == 6){
         var newPlayerImage = new Object();
         initPlayerImage(newPlayerImage, playerWithBall);
