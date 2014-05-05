@@ -205,6 +205,8 @@ function findUserThatGoal(id) {
             users[key].score += 1;
             if (users[key].score >= 3) {
                 scene.blackhole();
+            } else if (users[key].score >= 6) {
+                scene.jungle();
             }
         }
     }
