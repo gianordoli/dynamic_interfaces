@@ -1,9 +1,8 @@
 
-week_01/defrag/node_modules/
+01_defrag/node_modules/
 
-week_02/controlGarment/node_modules/
+02_wearable_trackpad/nodejs/read_serial_trackpad/node_modules/
 
-week_02/wearable_trackpad/nodejs/read_serial_trackpad/node_modules/
+02_wearable_trackpad/nodejs/read_serial_stripe/node_modules/
 
-week_02/wearable_trackpad/nodejs/read_serial_stripe/node_modules/
-
+03_pelada/node_modules/
