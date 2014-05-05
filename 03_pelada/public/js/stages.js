@@ -18,11 +18,13 @@ var scene = {
         console.log('rendering blackhole');
         this.curr = '> blackhole';
         $('#textWrapper').css('opacity', 1);
-        $('#stageTitle').html('PLANETS!!').css('color', 'black');
+        $('#stageTitle').html('PLANETS!').css('color', 'black');
+        var pos = { x: ~~ ((Math.random() * this.w)),
+                          y: ~~ ((Math.random() * this.h)) };
         $('#stageInfo').html('They are getting in your way!').css('color', 'black');
         var side = ~~ ((Math.random() * 20) + 6),
-            size = ~~ ((Math.random() * 100) + 10);
-        var planet = Bodies.polygon(this.w / 2, this.h / 2 - 85, side, size, {
+            size = ~~ ((Math.random() * 100) + 40);
+        var planet = Bodies.polygon(pos.x, pos.x, side, size, {
             isStatic: false,
             friction: 0.00001,
             restitution: 0.5,
@@ -36,7 +38,8 @@ var scene = {
     jungle: function() {
         console.log('rendering jungle');
         this.curr = '> jungle';
-        $('#stageTitle').html('THE JUNGLE').css('color', 'black');
+        $('#textWrapper').css('opacity', 1);
+        $('#stageTitle').html('THE JUNGLE!').css('color', 'black');
         $('#stageInfo').html('Welcome to the Jungle.').css('color', 'black');
         var x = ~~ ((Math.random() * this.w)),
             y = ~~ ((Math.random() * this.h)),

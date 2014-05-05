@@ -88,7 +88,8 @@ Events.on(engine, 'collisionStart', function(event) {
         }
 
         //Brighten the colors, IF THE COLLISION IS NOT WITH THE GOALS!
-        if (!pair.bodyA.isStatic && pair.bodyA.friction !== 0.00001 && !pair.bodyB.isStatic && pair.bodyB.friction !== 0.00001) {
+        // if (!pair.bodyA.isStatic && pair.bodyA.friction !== 0.00001 && !pair.bodyB.isStatic && pair.bodyB.friction !== 0.00001) {
+            if (!pair.bodyA.isStatic && pair.bodyA.area < 3000 && !pair.bodyB.isStatic && pair.bodyB.area < 3000) {
 
             pair.bodyA.render.fillStyle = pair.bodyA.render.fillStyle.substring(0, pair.bodyA.render.fillStyle.lastIndexOf(',') + 2) +
                 65 + pair.bodyA.render.fillStyle.substring(pair.bodyA.render.fillStyle.lastIndexOf('%'));

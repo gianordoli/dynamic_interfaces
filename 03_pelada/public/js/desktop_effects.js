@@ -52,7 +52,7 @@ function shake(normal) {
     } else if (normal.y == -1) {
         shakeDirection = 'up';
     }
-    console.log(shakeDirection);
+    // console.log(shakeDirection);
     $('#canvas-container').effect("bounce", {
         direction: shakeDirection,
         distance: 5,
