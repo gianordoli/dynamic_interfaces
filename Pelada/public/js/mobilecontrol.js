@@ -116,7 +116,8 @@ socket.on('announce disconnected user', function(d) {
 // helper
 function getRandColor() {
     var h = ~~ (Math.random() * 360);
-    return 'hsl(' + h + ', 75%, 50%)';
+    var s = ~~ ((Math.random() * 75) + 50);
+    return 'hsl(' + h + ',' + s + '%, 50%)';
 }
 
 function centerObj(obj) {

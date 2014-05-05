@@ -88,8 +88,7 @@ Events.on(engine, 'collisionStart', function(event) {
         }
 
         //Brighten the colors, IF THE COLLISION IS NOT WITH THE GOALS!
-        if (pair.bodyA.id != scene.worldEl[4].id && pair.bodyA.id != scene.worldEl[5].id &&
-            pair.bodyB.id != scene.worldEl[4].id && pair.bodyB.id != scene.worldEl[5].id) {
+        if (!pair.bodyA.isStatic && pair.bodyA.friction !== 0.00001 && !pair.bodyB.isStatic && pair.bodyB.friction !== 0.00001) {
 
             pair.bodyA.render.fillStyle = pair.bodyA.render.fillStyle.substring(0, pair.bodyA.render.fillStyle.lastIndexOf(',') + 2) +
                 65 + pair.bodyA.render.fillStyle.substring(pair.bodyA.render.fillStyle.lastIndexOf('%'));
@@ -122,7 +121,7 @@ Events.on(engine, 'collisionStart', function(event) {
             }
 
             //Is object B one of our bars?
-            if (!pair.bodyB.isStatic) {
+            if (!pair.bodyB.isStatic && pair.bodyB.friction !== 0.00001) {
                 var newColor = pair.bodyB.render.fillStyle;
                 pair.bodyA.render.fillStyle = newColor;
                 pair.bodyA.render.strokeStyle = newColor;
@@ -157,7 +156,7 @@ Events.on(engine, 'collisionStart', function(event) {
             }
 
             //Is object A one of our bars?
-            if (!pair.bodyA.isStatic) {
+            if (!pair.bodyA.isStatic && pair.bodyA.friction !== 0.00001) {
                 var newColor = pair.bodyA.render.fillStyle;
                 pair.bodyB.render.fillStyle = newColor;
                 pair.bodyB.render.strokeStyle = newColor;
@@ -187,7 +186,7 @@ Events.on(engine, 'collisionStart', function(event) {
 
 $('#stageTitle').css({
     top: window.innerHeight / 2 - 50 + 100,
-    left: window.innerWidth / 2 - 200
+    left: window.innerWidth / 2 - 250
 });
 $('#stageInfo').css({
     top: window.innerHeight / 2 + 50 + 100,
