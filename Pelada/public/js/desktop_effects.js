@@ -4,6 +4,10 @@
 var myCanvas = document.getElementById('canvas-effects');
 var ctx = myCanvas.getContext('2d');
 var collisionEffects = [];
+var playerImages = [];
+
+var images = [];
+var imagesIndex = 0;
 
 setup();
 
@@ -11,6 +15,12 @@ function setup() {
     isEffectLoaded = true;
     resizeCanvas();
     console.log('setup');
+    images[0] = 'img/pele.png';
+    images[1] = 'img/maradona.png';
+    images[2] = 'img/cristiano.png';
+    images[3] = 'img/ronaldo.png';
+    images[4] = 'img/messi.png';
+    images[5] = 'img/neymar.png';
 }
 
 function draw() {
@@ -22,7 +32,10 @@ function draw() {
         obj.draw(index);
     });
 
-    // request = requestAnimFrame(draw);
+    playerImages.forEach(function(obj, index) {
+        // console.log(obj.pos.x);
+        obj.draw();
+    });
 }
 
 function shake(normal) {
@@ -51,6 +64,21 @@ function shake(normal) {
     // mode: The mode of the effect. Can be "show", "hide" or "effect". Default is "effect".
     // times: Times to bounce. Default is 5.
 
+}
+
+/*--------------- PLAYERS' IMAGES ---------------*/
+function initPlayerImage(obj, _user) {
+    obj.user = _user;
+    obj.image = new Image();
+    obj.image.src = images[imagesIndex];
+    obj.draw = drawPlayerImage;
+    // console.log(obj.user);
+    imagesIndex++;
+}
+
+function drawPlayerImage() {
+    ctx.drawImage(this.image, this.user.bar.position.x - 30,
+        this.user.bar.position.y - 30);
 }
 
 /*--------------- COLLISION ---------------*/

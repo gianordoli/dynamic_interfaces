@@ -7,6 +7,7 @@ var scene = {
     center: [this.w / 2, this.h / 2],
     worldEl: [],
     blackholeEl: [],
+    spin: [],
     tutorial: function() {
         console.log('rendering tutorial');
         this.curr = '> tutorial';
@@ -16,21 +17,38 @@ var scene = {
     blackhole: function() {
         console.log('rendering blackhole');
         this.curr = '> blackhole';
-        $('#stageTitle').html('BLACKHOLE').css('color', 'black');
-        $('#stageInfo').html('Beware of the blackhole!').css('color', 'black');
-        var side = ~~ (Math.random() * 20 + 10),
-            size = ~~ (Math.random() * 100 + 200);
-        this.blackholeEl = [
-            Bodies.polygon(this.w / 2, this.h / 2 - 85, side, size, {
-                isStatic: false
-            })
-        ];
-        World.add(engine.world, scene.blackholeEl);
+        $('#textWrapper').css('opacity', 1);
+        $('#stageTitle').html('PLANETS!!').css('color', 'black');
+        $('#stageInfo').html('They are getting in your way!').css('color', 'black');
+        var side = ~~ ((Math.random() * 20) + 6),
+            size = ~~ ((Math.random() * 100) + 10);
+        var planet = Bodies.polygon(this.w / 2, this.h / 2 - 85, side, size, {
+            isStatic: false,
+            friction: 0.00001,
+            restitution: 0.5,
+            density: 0.00001
+        });
+        console.log(planet);
+        planet.render.fillStyle = 'hsl(100, 100%, 100%)';
+        planet.render.strokeStyle = getRandColor();
+        World.add(engine.world, planet);
     },
     jungle: function() {
         console.log('rendering jungle');
         this.curr = '> jungle';
-        $('#stageTitle').html('JUNGLE');
+        $('#stageTitle').html('THE JUNGLE').css('color', 'black');
+        $('#stageInfo').html('Welcome to the Jungle.').css('color', 'black');
+        var x = ~~ ((Math.random() * this.w)),
+            y = ~~ ((Math.random() * this.h)),
+            w = 10,
+            h = ~~ ((Math.random() * 200));
+        var spin = Bodies.rectangle(x, y, w, h, {
+            isStatic: true
+        });
+        spin.render.fillStyle = 'white';
+        spin.render.strokeStyle = getRandColor();
+        World.add(engine.world, spin);
+        scene.spin.push(spin);
     },
     random: function() {
         this.curr = '> random';
@@ -70,7 +88,20 @@ var scene = {
             }),
             Bodies.polygon(this.w, this.h / 2 + 85, 3, 40, {
                 isStatic: true
-            })
+            }),
+            // corners
+            Bodies.polygon(0, 10, 3, 50, {
+                isStatic: true
+            }),
+            Bodies.polygon(0, this.h - 8, 3, 50, {
+                isStatic: true
+            }),
+            Bodies.polygon(this.w, 10, 3, 50, {
+                isStatic: true
+            }),
+            Bodies.polygon(this.w, this.h - 10, 3, 50, {
+                isStatic: true
+            }),
         ];
 
         World.add(engine.world, scene.worldEl);
@@ -90,10 +121,31 @@ var scene = {
                 }
                 scene.worldEl[i].render.fillStyle = rand;
                 scene.worldEl[i].render.strokeStyle = rand;
+            } else if (i == 10) {
+                Body.rotate(scene.worldEl[i], 3.1);
+                scene.worldEl[i].render.fillStyle = rand;
+                scene.worldEl[i].render.strokeStyle = rand;
+            } else if (i == 11) {
+                Body.rotate(scene.worldEl[i], 45);
+                scene.worldEl[i].render.fillStyle = rand;
+                scene.worldEl[i].render.strokeStyle = rand;
+            } else {
+                scene.worldEl[i].render.fillStyle = rand;
+                scene.worldEl[i].render.strokeStyle = rand;
             }
         });
     }
 };
+var r = 0;
+setInterval(function() {
+    r += 0.01;
+    scene.spin.forEach(function(v, i) {
+        Body.rotate(scene.spin[i], r);
+    });
+    if (r >= 0.1) {
+        r = 0;
+    }
+}, 1000 / 60);
 
 function getRandColor() {
     var hsl;
