@@ -235,15 +235,9 @@ function printGoal() {
 
         //Updating the user properties
         playerWithBall.bar = newBar;
-<<<<<<< HEAD
-        playerWithBall.nSides ++;
-        playerWithBall.radius += 2;        
-    }else if(playerWithBall.nSides == 6){
-=======
         playerWithBall.nSides++;
         // playerWithBall.radius += 2;
     } else if (playerWithBall.nSides == 7) {
->>>>>>> 39d34a577252ed6f3bde198e72fd6324d72a3906
         var newPlayerImage = new Object();
         initPlayerImage(newPlayerImage, playerWithBall);
         playerImages.push(newPlayerImage);
