@@ -162,6 +162,7 @@ Events.on(engine, 'collisionStart', function(event) {
                 pair.bodyB.render.strokeStyle = newColor;
                 // play collision sound
                 playSound(0, ~~ (Math.random() * 10), 1, 1, 1);
+                $('#textWrapper').css('opacity', 0);
                 //Store that id, man!
                 for (var key in users) {
                     if (users[key].bar.id == pair.bodyA.id) {
@@ -189,7 +190,7 @@ $('#stageTitle').css({
     left: window.innerWidth / 2 - 250
 });
 $('#stageInfo').css({
-    top: window.innerHeight / 2 + 50 + 100,
+    top: window.innerHeight / 2 + 50 + 80,
     left: window.innerWidth / 2 - 250
 });
 // run the engine
@@ -212,13 +213,32 @@ function findUserThatGoal(id) {
     }
 }
 
+    // $('#goalBanner').css({left: window.innerWidth/2 - 200});
+    // $('#goalBanner').html('<i><br><br><h1>GOAL!</h1><h5>YOU DID IT,<br>Gab!</h5></i>');
+    // var newTop = window.innerHeight * 0.5 - 200 + 'px';
+    // console.log(newTop);
+    // $('#goalBanner').animate({
+    //     top: newTop
+    //     },
+    //     1000,
+    //     'easeOutBack',
+    //     function(){
+    //         setTimeout(function(){
+    //             console.log('hey');
+    //             $('#goalBanner').animate({top: '-500px'}, 500, 'easeInBack');
+    //         }, 500);
+    //     });
+
 function printGoal() {
     //Sound
     playSound(2, 1, 1, 1, 1);
 
     //Banner
-    $('#goalBanner').css({left: window.innerWidth/2 - 200});
-    $('#goalBanner').html('<i><br><br><h1>GOAL!</h1>' + playerWithBall.name +'</i>');
+    $('#goalBanner').css({
+        left: window.innerWidth/2 - 200,
+        'background-color': playerWithBall.bar.render.fillStyle
+    });
+    $('#goalBanner').html('<i><br><br><h1>GOAL!</h1><h5>YOU DID IT,<br>' + playerWithBall.name +'!</h5></i>');
     var newTop = window.innerHeight * 0.5 - 200 + 'px';
     console.log(newTop);
     $('#goalBanner').animate({
@@ -258,7 +278,8 @@ function printGoal() {
     } else if (playerWithBall.nSides == 7) {
         var newPlayerImage = new Object();
         initPlayerImage(newPlayerImage, playerWithBall);
-        playerImages.push(newPlayerImage);
+        // playerImages.push(newPlayerImage);
+        playerImages[playerWithBall.id] = newPlayerImage;
         playerWithBall.nSides++;
     }
 
@@ -345,6 +366,7 @@ function removeUser(userId) {
     //Remove object from the world
     Composite.remove(engine.world, users[userId].bar, true);
     //Remove user object
-    delete users[userId];
-    $('#' + userId).remove();
+    delete users[userId];       //user from array
+    $('#' + userId).remove();   //name layer
+    delete playerImages[userId];//player face
 }

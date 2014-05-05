@@ -4,7 +4,7 @@
 var myCanvas = document.getElementById('canvas-effects');
 var ctx = myCanvas.getContext('2d');
 var collisionEffects = [];
-var playerImages = [];
+var playerImages = {};
 
 var images = [];
 var imagesIndex = 0;
@@ -31,11 +31,13 @@ function draw() {
         // console.log(obj.pos.x);
         obj.draw(index);
     });
-
-    playerImages.forEach(function(obj, index) {
+    for(var index in playerImages){
+        playerImages[index].draw();
+    }
+    // playerImages.forEach(function(obj, index) {
         // console.log(obj.pos.x);
-        obj.draw();
-    });
+        // obj.draw();
+    // });
 }
 
 function shake(normal) {

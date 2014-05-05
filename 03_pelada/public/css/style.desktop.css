@@ -36,14 +36,17 @@ body{
 	width: 400px;
 	height: 400px;
 	border-radius: 400px;
-	border: 10px double hsl(50, 100%, 50%);
+	/*border: 10px double hsl(50, 100%, 50%);*/
+	border: 10px double white;
 	background-color: hsl(150, 80%, 30%);
 	text-align: center;
-	vertical-align: middle;
+	/*vertical-align: middle;*/
 	font-size: 3em;
+	/*line-height: 1.2em;*/
 	/*top: calc(50% - 250px);*/
-	top: -300px;
-	color: hsl(50, 100%, 50%);
+	top: -500px;
+	/*color: hsl(50, 100%, 50%);*/
+	color: white;
 	z-index: 99;
 	opacity: 1;
 }

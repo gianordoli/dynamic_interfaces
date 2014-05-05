@@ -12,7 +12,7 @@ var scene = {
         console.log('rendering tutorial');
         this.curr = '> tutorial';
         $('#stageTitle').html('TUTORIAL').css('color', 'black');
-        $('#stageInfo').html('Easy mode, be an octagon to win').css('color', 'black');
+        $('#stageInfo').html('Easy mode!<br>Take the ball to any side to score!').css('color', 'black');
     },
     blackhole: function() {
         console.log('rendering blackhole');

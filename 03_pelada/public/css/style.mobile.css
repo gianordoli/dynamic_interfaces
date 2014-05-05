@@ -15,7 +15,8 @@
 }
 
 * {
-	font-family: Lato !important;
+	/*font-family: Lato !important;*/
+	font-family: 'Varela Round' !important;
 	margin: 0;
 	padding: 0;
 }
@@ -29,7 +30,8 @@
 }
 
 body {
-	background: #8d7cab;
+	/*background: #8d7cab;*/
+	background: hsl(150, 80%, 30%);
 }
 
 .logo {
